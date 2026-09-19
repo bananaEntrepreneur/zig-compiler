@@ -14,9 +14,11 @@
 
 '([^'\\\n]|\\.)' { std::cout << "Char literal: " << yytext << '\n'; }
 
-// String
+// Strings
 
 \"([^\"\\\n]|\\.)*\" { std::cout << "String literal: " << yytext << '\n'; }
+
+(\\\\.*\n?)+ { std::cout << "Multiline string literal: " << yytext << '\n'; }
 
 %%
 
