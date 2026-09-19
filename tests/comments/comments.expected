@@ -1,13 +1,25 @@
 Single-line comment: // plain single-line comment
+
 Single-line comment: //
+
 Documentation comment: /// doc comment
+
 Top-level documentation comment: //! top-level doc comment
+
 Four slash single-line comment: //// four slashes is a normal comment in Zig
+
 Four slash single-line comment: ///// five slashes too
+
 Single-line comment: // comment with "double quotes" inside
+
 Single-line comment: // comment with 'apostrophes' and don't
+
 Single-line comment: // comment with a \\ backslash pair
+
 const after = String literal: "// not a comment"
+;
 const doc = String literal: "/// also not a comment"
+;
 const x = 1; Single-line comment: // trailing comment after code
+
 Single-line comment: // last line, no trailing newline
