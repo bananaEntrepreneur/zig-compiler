@@ -8,6 +8,10 @@
 
 '([^'\\\n]|\\.)' { std::cout << "Char literal: " << yytext << '\n'; }
 
+// String
+
+\"([^\"\\\n]|\\.)*\" { std::cout << "String literal: " << yytext << '\n'; }
+
 %%
 
 int main(int argc, char* argv[]) {
