@@ -6,6 +6,8 @@
 
 "//".* { std::cout << "Single-line comment: " << yytext << '\n'; }
 
+'([^'\\\n]|\\.)' { std::cout << "Char literal: " << yytext << '\n'; }
+
 %%
 
 int main(int argc, char* argv[]) {
