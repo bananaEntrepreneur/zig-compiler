@@ -4,7 +4,7 @@
 
 %%
 
-// Comments
+    /* Comments */
 
 "///".* { std::cout << "Documentation comment: " << yytext << '\n'; }
 
@@ -14,7 +14,7 @@
 
 '([^'\\\n]|\\.)' { std::cout << "Char literal: " << yytext << '\n'; }
 
-// Strings
+    /* Strings */
 
 \"([^\"\\\n]|\\.)*\" { std::cout << "String literal: " << yytext << '\n'; }
 
