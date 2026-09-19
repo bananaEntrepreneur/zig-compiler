@@ -1,5 +1,12 @@
+%{
 #include <iostream>
+%}
 
+%%
+
+"//".* { std::cout << "Single-line comment: " << yytext << '\n'; }
+
+%%
 
 int main(int argc, char* argv[]) {
     extern FILE* yyin;
@@ -12,7 +19,7 @@ int main(int argc, char* argv[]) {
     yyin = fopen(argv[1], "r");
 
     if (!yyin) {
-        std::cout << "File was not found!\n"
+        std::cout << "File was not found!\n";
         return 1;
     }
 
