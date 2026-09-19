@@ -1,1 +1,1 @@
-zed-compiler
+zig-compiler

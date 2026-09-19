@@ -1,5 +1,10 @@
+%x MLSTR
+
 %{
 #include <iostream>
+#include <string>
+
+static std::string ml;
 %}
 
 %%
@@ -18,7 +23,15 @@
 
 \"([^\"\\\n]|\\.)*\" { std::cout << "String literal: " << yytext << '\n'; }
 
-(\\\\.*\n?)+ { std::cout << "Multiline string literal: " << yytext << '\n'; }
+\\\\ { ml.clear(); BEGIN(MLSTR); }
+
+<MLSTR>[^\n]+ { ml += yytext; }
+
+<MLSTR>\n[ \t]*\\\\ { ml += '\n'; }
+
+<MLSTR>\n { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
+
+<MLSTR><<EOF>> { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
 %%
 
