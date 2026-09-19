@@ -4,6 +4,12 @@
 
 %%
 
+// Comments
+
+"///".* { std::cout << "Documentation comment: " << yytext << '\n'; }
+
+"//!".* { std::cout << "Top-level documentation comment: " << yytext << '\n'; }
+
 "//".* { std::cout << "Single-line comment: " << yytext << '\n'; }
 
 '([^'\\\n]|\\.)' { std::cout << "Char literal: " << yytext << '\n'; }
