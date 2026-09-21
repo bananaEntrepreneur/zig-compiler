@@ -9,6 +9,11 @@
 static std::string ml;
 %}
 
+DEC [0-9](_?[0-9])*
+HEX [0-9a-fA-F](_?[0-9a-fA-F])*
+BIN [01](_?[01])*
+OCT [0-7](_?[0-7])*
+
 %%
 
     /* Comments */
@@ -41,17 +46,17 @@ static std::string ml;
 
     /* Numbers */
 
-0x[0-9a-fA-F_]+ { std::cout << "Hex integer literal: " << yytext << '\n'; }
+0x{HEX} { std::cout << "Hex integer literal: " << yytext << '\n'; }
 
-0b[01_]+ { std::cout << "Binary integer literal: " << yytext << '\n'; }
+0b{BIN} { std::cout << "Binary integer literal: " << yytext << '\n'; }
 
-0o[0-7_]+ { std::cout << "Octal integer literal: " << yytext << '\n'; }
+0o{OCT} { std::cout << "Octal integer literal: " << yytext << '\n'; }
 
-[0-9][0-9_]*\.[0-9][0-9_]*([eE][+-]?[0-9][0-9_]*)? { std::cout << "Float literal: " << yytext << '\n'; }
+{DEC}\.{DEC}([eE][+-]?{DEC})? { std::cout << "Float literal: " << yytext << '\n'; }
 
-[0-9][0-9_]*[eE][+-]?[0-9][0-9_]* { std::cout << "Float literal (exponent): " << yytext << '\n'; }
+{DEC}[eE][+-]?{DEC} { std::cout << "Float literal (exponent): " << yytext << '\n'; }
 
-[0-9][0-9_]* { std::cout << "Integer literal: " << yytext << '\n'; }
+{DEC} { std::cout << "Integer literal: " << yytext << '\n'; }
 
     /* Keywords */
 

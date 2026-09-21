@@ -12,3 +12,19 @@ Float literal: 3.14_15
 Float literal: 1.0e10
 Float literal: 1.5E-3
 Float literal (exponent): 2e8
+Integer literal: 1_000
+Hex integer literal: 0xDE_AD
+Binary integer literal: 0b1010_1010
+Octal integer literal: 0o7_55
+Float literal: 1_0.2_5
+Float literal (exponent): 1_0e1_0
+Integer literal: 0
+Identifier: x_
+Integer literal: 0
+Identifier: b_
+Integer literal: 0
+Identifier: o_
+Hex integer literal: 0x1
+Identifier: _
+Integer literal: 1
+Identifier: __0
