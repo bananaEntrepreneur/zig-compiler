@@ -1,42 +1,77 @@
-const empty = String literal: ""
-;
-const simple = String literal: "hello world"
-;
-const escapes = String literal: "nl:\n tab:\t cr:\r quote:\" apos:\' backslash:\\ hex:\x41 uni:\u{1F4A9}"
-;
-const ends_with_escaped_quote = String literal: "trailing \""
-;
-const escaped_backslash = String literal: "ends with a backslash \\"
-;
-const slashes = String literal: "// not a comment"
-;
-const doc_slashes = String literal: "/// not a doc comment"
-;
-const ml_marker = String literal: "a \\ backslash pair inside a string"
-;
-const two = String literal: "first"
- ++ String literal: "second"
-;
-
-const indented =
-    Multiline string literal: first line
+Keyword: const
+Identifier: empty
+Operator (assignment): =
+String literal: ""
+Semicolon: ;
+Keyword: const
+Identifier: simple
+Operator (assignment): =
+String literal: "hello world"
+Semicolon: ;
+Keyword: const
+Identifier: escapes
+Operator (assignment): =
+String literal: "nl:\n tab:\t cr:\r quote:\" apos:\' backslash:\\ hex:\x41 uni:\u{1F4A9}"
+Semicolon: ;
+Keyword: const
+Identifier: ends_with_escaped_quote
+Operator (assignment): =
+String literal: "trailing \""
+Semicolon: ;
+Keyword: const
+Identifier: escaped_backslash
+Operator (assignment): =
+String literal: "ends with a backslash \\"
+Semicolon: ;
+Keyword: const
+Identifier: slashes
+Operator (assignment): =
+String literal: "// not a comment"
+Semicolon: ;
+Keyword: const
+Identifier: doc_slashes
+Operator (assignment): =
+String literal: "/// not a doc comment"
+Semicolon: ;
+Keyword: const
+Identifier: ml_marker
+Operator (assignment): =
+String literal: "a \\ backslash pair inside a string"
+Semicolon: ;
+Keyword: const
+Identifier: two
+Operator (assignment): =
+String literal: "first"
+Operator (arithmetic): +
+Operator (arithmetic): +
+String literal: "second"
+Semicolon: ;
+Keyword: const
+Identifier: indented
+Operator (assignment): =
+Multiline string literal: first line
 second line
-;
-
-const unindented =
+Semicolon: ;
+Keyword: const
+Identifier: unindented
+Operator (assignment): =
 Multiline string literal: no indent here
 still going
-;
-
-const with_blank =
-    Multiline string literal: before
+Semicolon: ;
+Keyword: const
+Identifier: with_blank
+Operator (assignment): =
+Multiline string literal: before
 
 after
-;
-
-const ml_contents =
-    Multiline string literal: has "quotes" and // slashes and \n literal backslash-n
-;
-
-const after_ml = String literal: "back to normal"
-;
+Semicolon: ;
+Keyword: const
+Identifier: ml_contents
+Operator (assignment): =
+Multiline string literal: has "quotes" and // slashes and \n literal backslash-n
+Semicolon: ;
+Keyword: const
+Identifier: after_ml
+Operator (assignment): =
+String literal: "back to normal"
+Semicolon: ;

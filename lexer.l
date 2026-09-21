@@ -241,7 +241,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 "." { std::cout << "Operator (member): " << yytext << '\n'; }
 "?" { std::cout << "Operator (optional): " << yytext << '\n'; }
 
-[ \t\r]+     { /* ignored*/ }
+[ \t\r\n]+ { /* ignored */ }
 
 %%
 

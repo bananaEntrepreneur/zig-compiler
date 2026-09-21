@@ -1,2 +1,4 @@
-const ml_at_eof =
-    Multiline string literal: last line, file ends here
+Keyword: const
+Identifier: ml_at_eof
+Operator (assignment): =
+Multiline string literal: last line, file ends here
