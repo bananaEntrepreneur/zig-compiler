@@ -250,6 +250,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 "..." { std::cout << "Operator (range): " << yytext << '\n'; }
 ".." { std::cout << "Operator (range): " << yytext << '\n'; }
 "->" { std::cout << "Operator (return type): " << yytext << '\n'; }
+"=>" { std::cout << "Operator (switch prong): " << yytext << '\n'; }
 "." { std::cout << "Operator (member): " << yytext << '\n'; }
 "?" { std::cout << "Operator (optional): " << yytext << '\n'; }
 

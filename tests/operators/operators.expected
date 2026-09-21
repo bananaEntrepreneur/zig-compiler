@@ -45,3 +45,4 @@ Operator (optional): ?
 Operator (range): ..
 Operator (range): ...
 Operator (return type): ->
+Operator (switch prong): =>
