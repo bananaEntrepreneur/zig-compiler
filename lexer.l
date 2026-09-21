@@ -18,13 +18,13 @@ OCT [0-7](_?[0-7])*
 
     /* Comments */
 
-"//!".* { std::cout << "Top-level documentation comment: " << yytext << '\n'; }
+"//!"[^\r\n]* { std::cout << "Top-level documentation comment: " << yytext << '\n'; }
 
-"////".* { std::cout << "Four slash single-line comment: " << yytext << '\n'; }
+"////"[^\r\n]* { std::cout << "Four slash single-line comment: " << yytext << '\n'; }
 
-"///".* { std::cout << "Documentation comment: " << yytext << '\n'; }
+"///"[^\r\n]* { std::cout << "Documentation comment: " << yytext << '\n'; }
 
-"//".* { std::cout << "Single-line comment: " << yytext << '\n'; }
+"//"[^\r\n]* { std::cout << "Single-line comment: " << yytext << '\n'; }
 
     /* Character literals */
 
@@ -36,11 +36,11 @@ OCT [0-7](_?[0-7])*
 
 \\\\ { ml.clear(); BEGIN(MLSTR); }
 
-<MLSTR>[^\n]+ { ml += yytext; }
+<MLSTR>[^\r\n]+ { ml += yytext; }
 
-<MLSTR>\n[ \t]*\\\\ { ml += '\n'; }
+<MLSTR>\r?\n[ \t]*\\\\ { ml += '\n'; }
 
-<MLSTR>\n { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
+<MLSTR>\r?\n { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
 <MLSTR><<EOF>> { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
