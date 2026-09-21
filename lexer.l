@@ -107,6 +107,62 @@ static std::string ml;
 "false" { std::cout << "Boolean literal: " << yytext << '\n'; }
 "null" { std::cout << "Null literal: " << yytext << '\n'; }
 "undefined" { std::cout << "Constant: " << yytext << '\n'; }
+
+    /* Unsigned integer types */
+
+u1 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+u8 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+u16 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+u32 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+u64 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+u128 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+
+    /* Signed integer types */
+
+i1 { std::cout << "Signed integer type: " << yytext << '\n'; }
+i8 { std::cout << "Signed integer type: " << yytext << '\n'; }
+i16 { std::cout << "Signed integer type: " << yytext << '\n'; }
+i32 { std::cout << "Signed integer type: " << yytext << '\n'; }
+i64 { std::cout << "Signed integer type: " << yytext << '\n'; }
+i128 { std::cout << "Signed integer type: " << yytext << '\n'; }
+
+    /* Float types */
+
+f16 { std::cout << "Float type: " << yytext << '\n'; }
+f32 { std::cout << "Float type: " << yytext << '\n'; }
+f64 { std::cout << "Float type: " << yytext << '\n'; }
+f80 { std::cout << "Float type: " << yytext << '\n'; }
+f128 { std::cout << "Float type: " << yytext << '\n'; }
+
+    /* Other primitive types */
+
+"bool" { std::cout << "Bool type: " << yytext << '\n'; }
+"void" { std::cout << "Void type: " << yytext << '\n'; }
+"noreturn" { std::cout << "Noreturn type: " << yytext << '\n'; }
+"type" { std::cout << "Type: " << yytext << '\n'; }
+"anyerror" { std::cout << "Anyerror type: " << yytext << '\n'; }
+"anyopaque" { std::cout << "Anyopaque type: " << yytext << '\n'; }
+"comptime_int" { std::cout << "Comptime int type: " << yytext << '\n'; }
+"comptime_float" { std::cout << "Comptime float type: " << yytext << '\n'; }
+
+    /* Pointer-sized types */
+
+"usize" { std::cout << "Usize type: " << yytext << '\n'; }
+"isize" { std::cout << "Isize type: " << yytext << '\n'; }
+
+    /* C-compatible types */
+
+"c_char" { std::cout << "C char type: " << yytext << '\n'; }
+"c_short" { std::cout << "C short type: " << yytext << '\n'; }
+"c_ushort" { std::cout << "C ushort type: " << yytext << '\n'; }
+"c_int" { std::cout << "C int type: " << yytext << '\n'; }
+"c_uint" { std::cout << "C uint type: " << yytext << '\n'; }
+"c_long" { std::cout << "C long type: " << yytext << '\n'; }
+"c_ulong" { std::cout << "C ulong type: " << yytext << '\n'; }
+"c_longlong" { std::cout << "C longlong type: " << yytext << '\n'; }
+"c_ulonglong" { std::cout << "C ulonglong type: " << yytext << '\n'; }
+"c_longdouble" { std::cout << "C longdouble type: " << yytext << '\n'; }
+
 %%
 
 int main(int argc, char* argv[]) {
