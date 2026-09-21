@@ -163,6 +163,10 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 "c_ulonglong" { std::cout << "C ulonglong type: " << yytext << '\n'; }
 "c_longdouble" { std::cout << "C longdouble type: " << yytext << '\n'; }
 
+    /* Identifiers */
+
+[A-Za-z_][A-Za-z0-9_]* { std::cout << "Identifier: " << yytext << '\n'; }
+
 %%
 
 int main(int argc, char* argv[]) {
