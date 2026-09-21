@@ -46,6 +46,8 @@ OCT [0-7](_?[0-7])*
 
     /* Numbers */
 
+0x{HEX}(\.{HEX})?[pP][+-]?{DEC} { std::cout << "Hex float literal: " << yytext << '\n'; }
+
 0x{HEX} { std::cout << "Hex integer literal: " << yytext << '\n'; }
 
 0b{BIN} { std::cout << "Binary integer literal: " << yytext << '\n'; }
