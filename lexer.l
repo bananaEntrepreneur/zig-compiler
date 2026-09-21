@@ -35,6 +35,20 @@ static std::string ml;
 
 <MLSTR><<EOF>> { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
+    /* Numbers */
+
+0x[0-9a-fA-F_]+ { std::cout << "Hex integer literal: " << yytext << '\n'; }
+
+0b[01_]+ { std::cout << "Binary integer literal: " << yytext << '\n'; }
+
+0o[0-7_]+ { std::cout << "Octal integer literal: " << yytext << '\n'; }
+
+[0-9][0-9_]*\.[0-9][0-9_]*([eE][+-]?[0-9][0-9_]*)? { std::cout << "Float literal: " << yytext << '\n'; }
+
+[0-9][0-9_]*[eE][+-]?[0-9][0-9_]* { std::cout << "Float literal (exponent): " << yytext << '\n'; }
+
+[0-9][0-9_]* { std::cout << "Integer literal: " << yytext << '\n'; }
+
 %%
 
 int main(int argc, char* argv[]) {
