@@ -30,3 +30,31 @@ Builtin identifier: @select
 Builtin identifier: @splat
 Builtin identifier: @frameAddress
 Builtin identifier: @returnAddress
+Keyword: const
+Quoted identifier: @"weird name"
+Operator (assignment): =
+Integer literal: 1
+Semicolon: ;
+Keyword: const
+Quoted identifier: @"if"
+Operator (assignment): =
+Integer literal: 2
+Semicolon: ;
+Keyword: const
+Quoted identifier: @""
+Operator (assignment): =
+Integer literal: 3
+Semicolon: ;
+Keyword: const
+Quoted identifier: @"has \" quote"
+Operator (assignment): =
+Integer literal: 4
+Semicolon: ;
+Keyword: const
+Identifier: still_builtin
+Operator (assignment): =
+Builtin identifier: @import
+Punctuator: (
+String literal: "std"
+Punctuator: )
+Semicolon: ;

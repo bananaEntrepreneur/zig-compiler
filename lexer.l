@@ -175,6 +175,10 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
 @[a-zA-Z_][a-zA-Z0-9_]* { std::cout << "Builtin identifier: " << yytext << '\n'; }
 
+    /* Quoted identifiers (@"...") */
+
+@\"([^\"\\\n]|\\.)*\" { std::cout << "Quoted identifier: " << yytext << '\n'; }
+
     /* Punctuators */
 
 "[" { std::cout << "Punctuator: " << yytext << '\n'; }
