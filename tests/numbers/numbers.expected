@@ -1,0 +1,27 @@
+Integer literal: 0
+
+Integer literal: 42
+
+Integer literal: 1_000_000
+
+Hex integer literal: 0xFF
+
+Hex integer literal: 0xff_ff
+
+Binary integer literal: 0b1010
+
+Binary integer literal: 0b1010_1010
+
+Octal integer literal: 0o777
+
+Octal integer literal: 0o7_7_7
+
+Float literal: 3.14
+
+Float literal: 3.14_15
+
+Float literal: 1.0e10
+
+Float literal: 1.5E-3
+
+Float literal (exponent): 2e8
