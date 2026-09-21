@@ -101,6 +101,12 @@ static std::string ml;
 "volatile" { std::cout << "Keyword: " << yytext << '\n'; }
 "while" { std::cout << "Keyword: " << yytext << '\n'; }
 
+    /* Constants */
+
+"true" { std::cout << "Boolean literal: " << yytext << '\n'; }
+"false" { std::cout << "Boolean literal: " << yytext << '\n'; }
+"null" { std::cout << "Null literal: " << yytext << '\n'; }
+"undefined" { std::cout << "Constant: " << yytext << '\n'; }
 %%
 
 int main(int argc, char* argv[]) {
