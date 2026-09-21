@@ -46,3 +46,17 @@ Operator (range): ..
 Operator (range): ...
 Operator (return type): ->
 Operator (switch prong): =>
+Operator (wrapping): +%
+Operator (wrapping): -%
+Operator (wrapping): *%
+Operator (saturating): +|
+Operator (saturating): -|
+Operator (saturating): *|
+Operator (saturating): <<|
+Operator (assignment): +%=
+Operator (assignment): -%=
+Operator (assignment): *%=
+Operator (assignment): +|=
+Operator (assignment): -|=
+Operator (assignment): *|=
+Operator (assignment): <<|=
