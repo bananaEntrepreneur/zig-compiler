@@ -171,6 +171,76 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
 @[a-zA-Z_][a-zA-Z0-9_]* { std::cout << "Builtin identifier: " << yytext << '\n'; }
 
+    /* Punctuators */
+
+"[" { std::cout << "Punctuator: " << yytext << '\n'; }
+"]" { std::cout << "Punctuator: " << yytext << '\n'; }
+"{" { std::cout << "Punctuator: " << yytext << '\n'; }
+"}" { std::cout << "Punctuator: " << yytext << '\n'; }
+"(" { std::cout << "Punctuator: " << yytext << '\n'; }
+")" { std::cout << "Punctuator: " << yytext << '\n'; }
+
+    /* Separators */
+
+"," { std::cout << "Separator: " << yytext << '\n'; }
+":" { std::cout << "Separator: " << yytext << '\n'; }
+";" { std::cout << "Semicolon: " << yytext << '\n'; }
+
+    /* Operators (arithmetic) */
+
+"**" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
+"+" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
+"-" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
+"*" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
+"/" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
+"%" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
+
+    /* Operators (comparison) */
+
+"==" { std::cout << "Operator (comparison): " << yytext << '\n'; }
+"!=" { std::cout << "Operator (comparison): " << yytext << '\n'; }
+"<=" { std::cout << "Operator (comparison): " << yytext << '\n'; }
+">=" { std::cout << "Operator (comparison): " << yytext << '\n'; }
+"<" { std::cout << "Operator (comparison): " << yytext << '\n'; }
+">" { std::cout << "Operator (comparison): " << yytext << '\n'; }
+
+    /* Operators (logical) */
+
+"!" { std::cout << "Operator (logical): " << yytext << '\n'; }
+
+    /* Operators (bitwise) */
+
+"<<" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
+">>" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
+"&" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
+"|" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
+"^" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
+"~" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
+
+    /* Operators (assignment) */
+
+"<<=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+">>=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"+=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"-=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"*=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"/=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"%=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"&=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"|=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"^=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+"=" { std::cout << "Operator (assignment): " << yytext << '\n'; }
+
+    /* Operators (other) */
+
+".*" { std::cout << "Operator (struct deref): " << yytext << '\n'; }
+".?" { std::cout << "Operator (optional unwrap): " << yytext << '\n'; }
+"..." { std::cout << "Operator (range): " << yytext << '\n'; }
+".." { std::cout << "Operator (range): " << yytext << '\n'; }
+"->" { std::cout << "Operator (return type): " << yytext << '\n'; }
+"." { std::cout << "Operator (member): " << yytext << '\n'; }
+"?" { std::cout << "Operator (optional): " << yytext << '\n'; }
+
 %%
 
 int main(int argc, char* argv[]) {
