@@ -269,6 +269,14 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
     /* Errors */
 
+\"([^\"\\\n]|\\.)* { std::cerr << "Line " << yylineno << ": unterminated string literal\n"; }
+
+@\"([^\"\\\n]|\\.)* { std::cerr << "Line " << yylineno << ": unterminated quoted identifier\n"; }
+
+'([^'\\\n]|\\.)*' { std::cerr << "Line " << yylineno << ": invalid character literal: " << yytext << '\n'; }
+
+' { std::cerr << "Line " << yylineno << ": unterminated character literal\n"; }
+
 . { std::cerr << "Line " << yylineno << ": unexpected character: " << yytext << '\n'; }
 
 %%

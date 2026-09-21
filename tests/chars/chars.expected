@@ -66,9 +66,7 @@ Semicolon: ;
 Keyword: const
 Identifier: not_a_char
 Operator (assignment): =
-Line 14: unexpected character: '
-Identifier: ab
-Line 14: unexpected character: '
+Line 14: invalid character literal: 'ab'
 Semicolon: ;
 Keyword: const
 Identifier: in_string
