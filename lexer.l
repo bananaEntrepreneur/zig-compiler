@@ -167,6 +167,10 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
 [A-Za-z_][A-Za-z0-9_]* { std::cout << "Identifier: " << yytext << '\n'; }
 
+    /* Builtin identifiers (@...) */
+
+@[a-zA-Z_][a-zA-Z0-9_]* { std::cout << "Builtin identifier: " << yytext << '\n'; }
+
 %%
 
 int main(int argc, char* argv[]) {
