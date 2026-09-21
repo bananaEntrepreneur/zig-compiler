@@ -229,6 +229,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 ">>" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
 "<<|" { std::cout << "Operator (saturating): " << yytext << '\n'; }
 "&" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
+"||" { std::cout << "Operator (error set merge): " << yytext << '\n'; }
 "|" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
 "^" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
 "~" { std::cout << "Operator (bitwise): " << yytext << '\n'; }

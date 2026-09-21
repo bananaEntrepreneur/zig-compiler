@@ -60,3 +60,4 @@ Operator (assignment): +|=
 Operator (assignment): -|=
 Operator (assignment): *|=
 Operator (assignment): <<|=
+Operator (error set merge): ||
