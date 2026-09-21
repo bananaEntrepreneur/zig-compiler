@@ -21,6 +21,10 @@ static std::string ml;
 
 "//".* { std::cout << "Single-line comment: " << yytext << '\n'; }
 
+    /* Character literals */
+
+'([^'\\\n][\x80-\xBF]*|\\([nrt'"\\]|x[0-9a-fA-F]{2}|u\{[0-9a-fA-F]+\}))' { std::cout << "Char literal: " << yytext << '\n'; }
+
     /* Strings */
 
 \"([^\"\\\n]|\\.)*\" { std::cout << "String literal: " << yytext << '\n'; }
