@@ -12,7 +12,8 @@ Operator (arithmetic): -
 Operator (arithmetic): *
 Operator (arithmetic): /
 Operator (arithmetic): %
-Operator (arithmetic): **
+Operator (array repeat): **
+Operator (array concat): ++
 Operator (comparison): ==
 Operator (comparison): !=
 Operator (comparison): <

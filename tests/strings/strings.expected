@@ -42,8 +42,7 @@ Keyword: const
 Identifier: two
 Operator (assignment): =
 String literal: "first"
-Operator (arithmetic): +
-Operator (arithmetic): +
+Operator (array concat): ++
 String literal: "second"
 Semicolon: ;
 Keyword: const

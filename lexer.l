@@ -194,9 +194,13 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 ":" { std::cout << "Separator: " << yytext << '\n'; }
 ";" { std::cout << "Semicolon: " << yytext << '\n'; }
 
+    /* Operators (array) */
+
+"++" { std::cout << "Operator (array concat): " << yytext << '\n'; }
+"**" { std::cout << "Operator (array repeat): " << yytext << '\n'; }
+
     /* Operators (arithmetic) */
 
-"**" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
 "+" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
 "-" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
 "*" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
