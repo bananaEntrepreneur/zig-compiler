@@ -44,7 +44,6 @@ Operator (optional unwrap): .?
 Operator (optional): ?
 Operator (range): ..
 Operator (range): ...
-Operator (return type): ->
 Operator (switch prong): =>
 Operator (wrapping): +%
 Operator (wrapping): -%

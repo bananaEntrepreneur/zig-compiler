@@ -201,7 +201,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 "/" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
 "%" { std::cout << "Operator (arithmetic): " << yytext << '\n'; }
 
-    /* Wrapping (%) and saturating (|) arithmetic */
+    /* Wrapping (%) and saturating (|) operators */
 
 "+%" { std::cout << "Operator (wrapping): " << yytext << '\n'; }
 "-%" { std::cout << "Operator (wrapping): " << yytext << '\n'; }
@@ -209,6 +209,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 "+|" { std::cout << "Operator (saturating): " << yytext << '\n'; }
 "-|" { std::cout << "Operator (saturating): " << yytext << '\n'; }
 "*|" { std::cout << "Operator (saturating): " << yytext << '\n'; }
+"<<|" { std::cout << "Operator (saturating): " << yytext << '\n'; }
 
     /* Operators (comparison) */
 
@@ -227,9 +228,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
 "<<" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
 ">>" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
-"<<|" { std::cout << "Operator (saturating): " << yytext << '\n'; }
 "&" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
-"||" { std::cout << "Operator (error set merge): " << yytext << '\n'; }
 "|" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
 "^" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
 "~" { std::cout << "Operator (bitwise): " << yytext << '\n'; }
@@ -261,8 +260,8 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 ".?" { std::cout << "Operator (optional unwrap): " << yytext << '\n'; }
 "..." { std::cout << "Operator (range): " << yytext << '\n'; }
 ".." { std::cout << "Operator (range): " << yytext << '\n'; }
-"->" { std::cout << "Operator (return type): " << yytext << '\n'; }
 "=>" { std::cout << "Operator (switch prong): " << yytext << '\n'; }
+"||" { std::cout << "Operator (error set merge): " << yytext << '\n'; }
 "." { std::cout << "Operator (member): " << yytext << '\n'; }
 "?" { std::cout << "Operator (optional): " << yytext << '\n'; }
 
