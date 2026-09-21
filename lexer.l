@@ -1,4 +1,4 @@
-%option noyywrap
+%option noyywrap yylineno
 
 %x MLSTR
 
@@ -266,6 +266,10 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 "?" { std::cout << "Operator (optional): " << yytext << '\n'; }
 
 [ \t\r\n]+ { /* ignored */ }
+
+    /* Errors */
+
+. { std::cerr << "Line " << yylineno << ": unexpected character: " << yytext << '\n'; }
 
 %%
 

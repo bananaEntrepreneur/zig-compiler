@@ -1,0 +1,23 @@
+Keyword: const
+Identifier: a
+Operator (assignment): =
+Integer literal: 1
+Semicolon: ;
+Keyword: const
+Identifier: b
+Operator (assignment): =
+Line 2: unexpected character: #
+Semicolon: ;
+Keyword: const
+Identifier: c
+Operator (assignment): =
+Line 3: unexpected character: $
+Identifier: x
+Semicolon: ;
+Keyword: const
+Identifier: d
+Operator (assignment): =
+Line 4: unexpected character: `
+Integer literal: 2
+Line 4: unexpected character: `
+Semicolon: ;
