@@ -35,3 +35,13 @@ c_ulong
 c_longlong
 c_ulonglong
 c_longdouble
+u0
+u7
+i3
+u256
+i65535
+u8x
+i32_foo
+u
+i
+f7

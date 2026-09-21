@@ -117,23 +117,10 @@ OCT [0-7](_?[0-7])*
 "null" { std::cout << "Null literal: " << yytext << '\n'; }
 "undefined" { std::cout << "Constant: " << yytext << '\n'; }
 
-    /* Unsigned integer types */
+    /* Integer types */
 
-u1 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-u8 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-u16 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-u32 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-u64 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-u128 { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-
-    /* Signed integer types */
-
-i1 { std::cout << "Signed integer type: " << yytext << '\n'; }
-i8 { std::cout << "Signed integer type: " << yytext << '\n'; }
-i16 { std::cout << "Signed integer type: " << yytext << '\n'; }
-i32 { std::cout << "Signed integer type: " << yytext << '\n'; }
-i64 { std::cout << "Signed integer type: " << yytext << '\n'; }
-i128 { std::cout << "Signed integer type: " << yytext << '\n'; }
+u[0-9]+ { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+i[0-9]+ { std::cout << "Signed integer type: " << yytext << '\n'; }
 
     /* Float types */
 
