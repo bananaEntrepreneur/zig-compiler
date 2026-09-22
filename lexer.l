@@ -48,7 +48,7 @@ OCT [0-7](_?[0-7])*
 
 <STR,QIDENT>[^\\"\n]+ { literal += yytext; }
 
-    /* One rule per escape sequence */
+    /* Escape sequences */
 
 <CHR,STR,QIDENT>\\n { literal += '\n'; }
 <CHR,STR,QIDENT>\\r { literal += '\r'; }
@@ -59,7 +59,7 @@ OCT [0-7](_?[0-7])*
 <CHR,STR,QIDENT>\\x[0-9a-fA-F]{2} { literal += (char)strtol(yytext + 2, nullptr, 16); }
 <CHR,STR,QIDENT>\\u\{[0-9a-fA-F]+\} { append_utf8(literal, strtoul(yytext + 3, nullptr, 16)); }
 
-<CHR,STR,QIDENT>\\(.|\n) { std::cerr << "Line " << yylineno << ": invalid escape sequence: " << yytext << '\n'; }
+<CHR,STR,QIDENT>\\.? { std::cerr << "Line " << yylineno << ": invalid escape sequence: " << yytext << '\n'; }
 
     /* Closing delimiters */
 
