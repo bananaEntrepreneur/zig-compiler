@@ -6,11 +6,11 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
-#include <cerrno>
 
 static std::string ml;
 static std::string literal;
 static int literal_line;
+static int literal_units;
 
 static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
@@ -38,26 +38,26 @@ OCT [0-7](_?[0-7])*
 
     /* Character and string literals */
 
-' { literal.clear(); literal_line = yylineno; BEGIN(CHR); }
+' { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(CHR); }
 
-\" { literal.clear(); literal_line = yylineno; BEGIN(STR); }
+\" { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(STR); }
 
-@\" { literal.clear(); literal_line = yylineno; BEGIN(QIDENT); }
+@\" { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(QIDENT); }
 
-<CHR>[^\\'\n]+ { literal += yytext; }
+<CHR>[^\\'\n]+ { literal += yytext; literal_units += count_codepoints(yytext); }
 
 <STR,QIDENT>[^\\"\n]+ { literal += yytext; }
 
     /* Escape sequences */
 
-<CHR,STR,QIDENT>\\n { literal += '\n'; }
-<CHR,STR,QIDENT>\\r { literal += '\r'; }
-<CHR,STR,QIDENT>\\t { literal += '\t'; }
-<CHR,STR,QIDENT>\\\\ { literal += '\\'; }
-<CHR,STR,QIDENT>\\' { literal += '\''; }
-<CHR,STR,QIDENT>\\\" { literal += '"'; }
-<CHR,STR,QIDENT>\\x[0-9a-fA-F]{2} { literal += (char)strtol(yytext + 2, nullptr, 16); }
-<CHR,STR,QIDENT>\\u\{[0-9a-fA-F]+\} { append_utf8(literal, strtoul(yytext + 3, nullptr, 16)); }
+<CHR,STR,QIDENT>\\n { literal += '\n'; ++literal_units; }
+<CHR,STR,QIDENT>\\r { literal += '\r'; ++literal_units; }
+<CHR,STR,QIDENT>\\t { literal += '\t'; ++literal_units; }
+<CHR,STR,QIDENT>\\\\ { literal += '\\'; ++literal_units; }
+<CHR,STR,QIDENT>\\' { literal += '\''; ++literal_units; }
+<CHR,STR,QIDENT>\\\" { literal += '"'; ++literal_units; }
+<CHR,STR,QIDENT>\\x[0-9a-fA-F]{2} { literal += (char)strtol(yytext + 2, nullptr, 16); ++literal_units; }
+<CHR,STR,QIDENT>\\u\{[0-9a-fA-F]+\} { append_utf8(literal, strtoul(yytext + 3, nullptr, 16)); ++literal_units; }
 
 <CHR,STR,QIDENT>\\.? { std::cerr << "Line " << yylineno << ": invalid escape sequence: " << yytext << '\n'; }
 
@@ -68,7 +68,7 @@ OCT [0-7](_?[0-7])*
 <QIDENT>\" { std::cout << "Quoted identifier: " << literal << '\n'; BEGIN(INITIAL); }
 
 <CHR>' {
-    if (count_codepoints(literal) == 1) {
+    if (literal_units == 1) {
         std::cout << "Char literal: " << literal << '\n';
     } else {
         std::cerr << "Line " << literal_line << ": character literal must hold exactly one character\n";
@@ -120,8 +120,6 @@ OCT [0-7](_?[0-7])*
 "anyframe" { std::cout << "Keyword: " << yytext << '\n'; }
 "anytype" { std::cout << "Keyword: " << yytext << '\n'; }
 "asm" { std::cout << "Keyword: " << yytext << '\n'; }
-"async" { std::cout << "Keyword: " << yytext << '\n'; }
-"await" { std::cout << "Keyword: " << yytext << '\n'; }
 "break" { std::cout << "Keyword: " << yytext << '\n'; }
 "callconv" { std::cout << "Keyword: " << yytext << '\n'; }
 "catch" { std::cout << "Keyword: " << yytext << '\n'; }
@@ -158,7 +156,6 @@ OCT [0-7](_?[0-7])*
 "try" { std::cout << "Keyword: " << yytext << '\n'; }
 "union" { std::cout << "Keyword: " << yytext << '\n'; }
 "unreachable" { std::cout << "Keyword: " << yytext << '\n'; }
-"usingnamespace" { std::cout << "Keyword: " << yytext << '\n'; }
 "var" { std::cout << "Keyword: " << yytext << '\n'; }
 "volatile" { std::cout << "Keyword: " << yytext << '\n'; }
 "while" { std::cout << "Keyword: " << yytext << '\n'; }
@@ -373,12 +370,7 @@ static std::string strip_underscores(const char* text) {
 static unsigned long long int_value(const char* text, int base) {
     std::string digits = strip_underscores(text);
 
-    errno = 0;
     unsigned long long value = strtoull(digits.c_str(), nullptr, base);
-
-    if (errno == ERANGE) {
-        std::cerr << "Line " << yylineno << ": integer literal out of range\n";
-    }
 
     return value;
 }
@@ -386,12 +378,7 @@ static unsigned long long int_value(const char* text, int base) {
 static double float_value(const char* text) {
     std::string digits = strip_underscores(text);
 
-    errno = 0;
     double value = strtod(digits.c_str(), nullptr);
-
-    if (errno == ERANGE) {
-        std::cerr << "Line " << yylineno << ": float literal out of range\n";
-    }
 
     return value;
 }

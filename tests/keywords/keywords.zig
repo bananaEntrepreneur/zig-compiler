@@ -5,8 +5,6 @@ and
 anyframe
 anytype
 asm
-async
-await
 break
 callconv
 catch
@@ -43,7 +41,6 @@ threadlocal
 try
 union
 unreachable
-usingnamespace
 var
 volatile
 while
