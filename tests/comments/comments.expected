@@ -10,12 +10,12 @@ Single-line comment: // comment with a \\ backslash pair
 Keyword: const
 Identifier: after
 Operator (assignment): =
-String literal: "// not a comment"
+String literal: // not a comment
 Semicolon: ;
 Keyword: const
 Identifier: doc
 Operator (assignment): =
-String literal: "/// also not a comment"
+String literal: /// also not a comment
 Semicolon: ;
 Keyword: const
 Identifier: x

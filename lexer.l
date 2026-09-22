@@ -1,6 +1,6 @@
 %option noyywrap yylineno
 
-%x MLSTR
+%x MLSTR STR CHR QIDENT
 
 %{
 #include <iostream>
@@ -9,9 +9,14 @@
 #include <cerrno>
 
 static std::string ml;
+static std::string literal;
+static int literal_line;
 
 static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
+static int count_codepoints(const std::string& text);
+static void append_utf8(std::string& out, unsigned long codepoint);
+static const char* literal_kind(int state);
 %}
 
 DEC [0-9](_?[0-9])*
@@ -31,13 +36,54 @@ OCT [0-7](_?[0-7])*
 
 "//"[^\r\n]* { std::cout << "Single-line comment: " << yytext << '\n'; }
 
-    /* Character literals */
+    /* Character and string literals */
 
-'([^'\\\n][\x80-\xBF]*|\\([nrt'"\\]|x[0-9a-fA-F]{2}|u\{[0-9a-fA-F]+\}))' { std::cout << "Char literal: " << yytext << '\n'; }
+' { literal.clear(); literal_line = yylineno; BEGIN(CHR); }
+
+\" { literal.clear(); literal_line = yylineno; BEGIN(STR); }
+
+@\" { literal.clear(); literal_line = yylineno; BEGIN(QIDENT); }
+
+<CHR>[^\\'\n]+ { literal += yytext; }
+
+<STR,QIDENT>[^\\"\n]+ { literal += yytext; }
+
+    /* One rule per escape sequence */
+
+<CHR,STR,QIDENT>\\n { literal += '\n'; }
+<CHR,STR,QIDENT>\\r { literal += '\r'; }
+<CHR,STR,QIDENT>\\t { literal += '\t'; }
+<CHR,STR,QIDENT>\\\\ { literal += '\\'; }
+<CHR,STR,QIDENT>\\' { literal += '\''; }
+<CHR,STR,QIDENT>\\\" { literal += '"'; }
+<CHR,STR,QIDENT>\\x[0-9a-fA-F]{2} { literal += (char)strtol(yytext + 2, nullptr, 16); }
+<CHR,STR,QIDENT>\\u\{[0-9a-fA-F]+\} { append_utf8(literal, strtoul(yytext + 3, nullptr, 16)); }
+
+<CHR,STR,QIDENT>\\(.|\n) { std::cerr << "Line " << yylineno << ": invalid escape sequence: " << yytext << '\n'; }
+
+    /* Closing delimiters */
+
+<STR>\" { std::cout << "String literal: " << literal << '\n'; BEGIN(INITIAL); }
+
+<QIDENT>\" { std::cout << "Quoted identifier: " << literal << '\n'; BEGIN(INITIAL); }
+
+<CHR>' {
+    if (count_codepoints(literal) == 1) {
+        std::cout << "Char literal: " << literal << '\n';
+    } else {
+        std::cerr << "Line " << literal_line << ": character literal must hold exactly one character\n";
+    }
+
+    BEGIN(INITIAL);
+}
+
+    /* Unterminated literals */
+
+<CHR,STR,QIDENT>\n { std::cerr << "Line " << literal_line << ": unterminated " << literal_kind(YY_START) << '\n'; BEGIN(INITIAL); }
+
+<CHR,STR,QIDENT><<EOF>> { std::cerr << "Line " << literal_line << ": unterminated " << literal_kind(YY_START) << '\n'; BEGIN(INITIAL); }
 
     /* Strings */
-
-\"([^\"\\\n]|\\.)*\" { std::cout << "String literal: " << yytext << '\n'; }
 
 \\\\ { ml.clear(); BEGIN(MLSTR); }
 
@@ -174,10 +220,6 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
 @[a-zA-Z_][a-zA-Z0-9_]* { std::cout << "Builtin identifier: " << yytext << '\n'; }
 
-    /* Quoted identifiers (@"...") */
-
-@\"([^\"\\\n]|\\.)*\" { std::cout << "Quoted identifier: " << yytext << '\n'; }
-
     /* Punctuators */
 
 "[" { std::cout << "Punctuator: " << yytext << '\n'; }
@@ -274,17 +316,47 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
     /* Errors */
 
-\"([^\"\\\n]|\\.)* { std::cerr << "Line " << yylineno << ": unterminated string literal\n"; }
-
-@\"([^\"\\\n]|\\.)* { std::cerr << "Line " << yylineno << ": unterminated quoted identifier\n"; }
-
-'([^'\\\n]|\\.)*' { std::cerr << "Line " << yylineno << ": invalid character literal: " << yytext << '\n'; }
-
-' { std::cerr << "Line " << yylineno << ": unterminated character literal\n"; }
-
 . { std::cerr << "Line " << yylineno << ": unexpected character: " << yytext << '\n'; }
 
 %%
+
+static void append_utf8(std::string& out, unsigned long codepoint) {
+    if (codepoint < 0x80) {
+        out += (char)codepoint;
+    } else if (codepoint < 0x800) {
+        out += (char)(0xC0 | (codepoint >> 6));
+        out += (char)(0x80 | (codepoint & 0x3F));
+    } else if (codepoint < 0x10000) {
+        out += (char)(0xE0 | (codepoint >> 12));
+        out += (char)(0x80 | ((codepoint >> 6) & 0x3F));
+        out += (char)(0x80 | (codepoint & 0x3F));
+    } else {
+        out += (char)(0xF0 | (codepoint >> 18));
+        out += (char)(0x80 | ((codepoint >> 12) & 0x3F));
+        out += (char)(0x80 | ((codepoint >> 6) & 0x3F));
+        out += (char)(0x80 | (codepoint & 0x3F));
+    }
+}
+
+static const char* literal_kind(int state) {
+    switch (state) {
+        case CHR:    return "character literal";
+        case QIDENT: return "quoted identifier";
+        default:     return "string literal";
+    }
+}
+
+static int count_codepoints(const std::string& text) {
+    int count = 0;
+
+    for (unsigned char c : text) {
+        if ((c & 0xC0) != 0x80) {
+            ++count;
+        }
+    }
+
+    return count;
+}
 
 static std::string strip_underscores(const char* text) {
     std::string digits;
