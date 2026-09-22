@@ -5,8 +5,13 @@
 %{
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <cerrno>
 
 static std::string ml;
+
+static unsigned long long int_value(const char* text, int base);
+static double float_value(const char* text);
 %}
 
 DEC [0-9](_?[0-9])*
@@ -46,19 +51,19 @@ OCT [0-7](_?[0-7])*
 
     /* Numbers */
 
-0x{HEX}(\.{HEX})?[pP][+-]?{DEC} { std::cout << "Hex float literal: " << yytext << '\n'; }
+0x{HEX}(\.{HEX})?[pP][+-]?{DEC} { double v = float_value(yytext); std::cout << "Hex float literal: " << v << '\n'; }
 
-0x{HEX} { std::cout << "Hex integer literal: " << yytext << '\n'; }
+0x{HEX} { unsigned long long v = int_value(yytext + 2, 16); std::cout << "Hex integer literal: " << v << '\n'; }
 
-0b{BIN} { std::cout << "Binary integer literal: " << yytext << '\n'; }
+0b{BIN} { unsigned long long v = int_value(yytext + 2, 2); std::cout << "Binary integer literal: " << v << '\n'; }
 
-0o{OCT} { std::cout << "Octal integer literal: " << yytext << '\n'; }
+0o{OCT} { unsigned long long v = int_value(yytext + 2, 8); std::cout << "Octal integer literal: " << v << '\n'; }
 
-{DEC}\.{DEC}([eE][+-]?{DEC})? { std::cout << "Float literal: " << yytext << '\n'; }
+{DEC}\.{DEC}([eE][+-]?{DEC})? { double v = float_value(yytext); std::cout << "Float literal: " << v << '\n'; }
 
-{DEC}[eE][+-]?{DEC} { std::cout << "Float literal (exponent): " << yytext << '\n'; }
+{DEC}[eE][+-]?{DEC} { double v = float_value(yytext); std::cout << "Float literal (exponent): " << v << '\n'; }
 
-{DEC} { std::cout << "Integer literal: " << yytext << '\n'; }
+{DEC} { unsigned long long v = int_value(yytext, 10); std::cout << "Integer literal: " << v << '\n'; }
 
     /* Keywords */
 
@@ -280,6 +285,44 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 . { std::cerr << "Line " << yylineno << ": unexpected character: " << yytext << '\n'; }
 
 %%
+
+static std::string strip_underscores(const char* text) {
+    std::string digits;
+
+    for (; *text; ++text) {
+        if (*text != '_') {
+            digits += *text;
+        }
+    }
+
+    return digits;
+}
+
+static unsigned long long int_value(const char* text, int base) {
+    std::string digits = strip_underscores(text);
+
+    errno = 0;
+    unsigned long long value = strtoull(digits.c_str(), nullptr, base);
+
+    if (errno == ERANGE) {
+        std::cerr << "Line " << yylineno << ": integer literal out of range\n";
+    }
+
+    return value;
+}
+
+static double float_value(const char* text) {
+    std::string digits = strip_underscores(text);
+
+    errno = 0;
+    double value = strtod(digits.c_str(), nullptr);
+
+    if (errno == ERANGE) {
+        std::cerr << "Line " << yylineno << ": float literal out of range\n";
+    }
+
+    return value;
+}
 
 int main(int argc, char* argv[]) {
     extern FILE* yyin;

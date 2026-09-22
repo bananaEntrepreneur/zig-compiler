@@ -1,39 +1,39 @@
 Integer literal: 0
 Integer literal: 42
-Integer literal: 1_000_000
-Hex integer literal: 0xFF
-Hex integer literal: 0xff_ff
-Binary integer literal: 0b1010
-Binary integer literal: 0b1010_1010
-Octal integer literal: 0o777
-Octal integer literal: 0o7_7_7
+Integer literal: 1000000
+Hex integer literal: 255
+Hex integer literal: 65535
+Binary integer literal: 10
+Binary integer literal: 170
+Octal integer literal: 511
+Octal integer literal: 511
 Float literal: 3.14
-Float literal: 3.14_15
-Float literal: 1.0e10
-Float literal: 1.5E-3
-Float literal (exponent): 2e8
-Integer literal: 1_000
-Hex integer literal: 0xDE_AD
-Binary integer literal: 0b1010_1010
-Octal integer literal: 0o7_55
-Float literal: 1_0.2_5
-Float literal (exponent): 1_0e1_0
+Float literal: 3.1415
+Float literal: 1e+10
+Float literal: 0.0015
+Float literal (exponent): 2e+08
+Integer literal: 1000
+Hex integer literal: 57005
+Binary integer literal: 170
+Octal integer literal: 493
+Float literal: 10.25
+Float literal (exponent): 1e+11
 Integer literal: 0
 Identifier: x_
 Integer literal: 0
 Identifier: b_
 Integer literal: 0
 Identifier: o_
-Hex integer literal: 0x1
+Hex integer literal: 1
 Identifier: _
 Integer literal: 1
 Identifier: __0
-Hex float literal: 0x1.8p3
-Hex float literal: 0x1p4
-Hex float literal: 0x1.fp-2
-Hex float literal: 0xFFp+8
-Hex float literal: 0x1_8.a_bp1_0
-Hex integer literal: 0x1e5
-Hex integer literal: 0x1
+Hex float literal: 12
+Hex float literal: 16
+Hex float literal: 0.484375
+Hex float literal: 65280
+Hex float literal: 25260
+Hex integer literal: 485
+Hex integer literal: 1
 Operator (member): .
 Integer literal: 8
