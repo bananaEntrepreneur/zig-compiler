@@ -83,16 +83,15 @@ OCT [0-7](_?[0-7])*
 
 <MLSTR>[^\r\n]+ { ml += yytext; }
 
-<MLSTR>\r?\n[ \t]*\\\\ { ml += '\n'; }
+<MLSTR>\r?\n[ \t]*\\\\ { ml += '\n'; } // Может быть несколько пустых строчек между многострочными строчками
 
 <MLSTR>\r?\n { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
 <MLSTR><<EOF>> { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
     /* Numbers */
-    /* What happens?: 0x1.1, 0x11p+10. */
+    /* Examples: 0x1.1, 0x11p+10, 0x1.1p+1 */
 0x{HEX}(\.{HEX}([pP][+-]?{DEC})?|[pP][+-]?{DEC}) { double v = float_value(yytext); std::cout << "Hex float literal: " << v << '\n'; }
-0x{HEX}(\.{HEX})[pP][+-]?{DEC}? { double v = float_value(yytext); std::cout << "Hex float literal: " << v << '\n'; }
 
 0x{HEX} { unsigned long long v = int_value(yytext + 2, 16); std::cout << "Hex integer literal: " << v << '\n'; }
 
