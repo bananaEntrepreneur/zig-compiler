@@ -53,7 +53,7 @@ Keyword: const
 Identifier: bad_quoted
 Operator (assignment): =
 Line 11: unterminated quoted identifier
-Single-line comment: // don't touch apostrophes in comments
+Comment: // don't touch apostrophes in comments
 Keyword: const
 Identifier: in_str
 Operator (assignment): =

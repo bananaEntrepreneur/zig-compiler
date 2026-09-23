@@ -10,40 +10,31 @@
 static std::string ml;
 static std::string literal;
 static int literal_line;
-static int literal_units;
 
 static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
-static int count_codepoints(const std::string& text);
-static void append_utf8(std::string& out, unsigned long codepoint);
 static const char* literal_kind(int state);
 %}
 
-DEC [0-9](_?[0-9])*
+DEC 0|[1-9](_?[0-9])*
 HEX [0-9a-fA-F](_?[0-9a-fA-F])*
 BIN [01](_?[01])*
 OCT [0-7](_?[0-7])*
 
 %%
 
-    /* Comments */
+    /* Comment. Match any comment. Anyway, they will be deleted by parser. */
 
-"//!"[^\r\n]* { std::cout << "Top-level documentation comment: " << yytext << '\n'; }
-
-"////"[^\r\n]* { std::cout << "Four slash single-line comment: " << yytext << '\n'; }
-
-"///"[^\r\n]* { std::cout << "Documentation comment: " << yytext << '\n'; }
-
-"//"[^\r\n]* { std::cout << "Single-line comment: " << yytext << '\n'; }
+"//"[^\r\n]* { std::cout << "Comment: " << yytext << '\n'; }
 
     /* Character literal */
 
-' { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(CHR); }
+' { literal.clear(); literal_line = yylineno; BEGIN(CHR); }
 
-<CHR>[^\\'\n]+ { literal += yytext; literal_units += count_codepoints(yytext); }
+<CHR>[^\\'\n] { literal += yytext; }
 
 <CHR>' {
-    if (literal_units == 1) {
+    if (literal.size() == 1) {
         std::cout << "Char literal: " << literal << '\n';
     } else {
         std::cerr << "Line " << literal_line << ": character literal must hold exactly one character\n";
@@ -54,28 +45,27 @@ OCT [0-7](_?[0-7])*
 
     /* String literal */
 
-\" { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(STR); }
+\" { literal.clear(); literal_line = yylineno; BEGIN(STR); }
 
 <STR,QIDENT>[^\\"\n]+ { literal += yytext; }
 
 <STR>\" { std::cout << "String literal: " << literal << '\n'; BEGIN(INITIAL); }
 
-    /* Quoted identifier */
+    /* Quoted identifier. Backslash and escape sequences can be used - it will be just an id. */
 
-@\" { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(QIDENT); }
+@\" { literal.clear(); literal_line = yylineno; BEGIN(QIDENT); }
 
 <QIDENT>\" { std::cout << "Quoted identifier: " << literal << '\n'; BEGIN(INITIAL); }
 
     /* Escape sequences */
 
-<CHR,STR,QIDENT>\\n { literal += '\n'; ++literal_units; }
-<CHR,STR,QIDENT>\\r { literal += '\r'; ++literal_units; }
-<CHR,STR,QIDENT>\\t { literal += '\t'; ++literal_units; }
-<CHR,STR,QIDENT>\\\\ { literal += '\\'; ++literal_units; }
-<CHR,STR,QIDENT>\\' { literal += '\''; ++literal_units; }
-<CHR,STR,QIDENT>\\\" { literal += '"'; ++literal_units; }
-<CHR,STR,QIDENT>\\x[0-9a-fA-F]{2} { literal += (char)strtol(yytext + 2, nullptr, 16); ++literal_units; }
-<CHR,STR,QIDENT>\\u\{[0-9a-fA-F]+\} { append_utf8(literal, strtoul(yytext + 3, nullptr, 16)); ++literal_units; }
+<CHR,STR,QIDENT>\\n { literal += '\n'; }
+<CHR,STR,QIDENT>\\r { literal += '\r'; }
+<CHR,STR,QIDENT>\\t { literal += '\t'; }
+<CHR,STR,QIDENT>\\\\ { literal += '\\'; }
+<CHR,STR,QIDENT>\\' { literal += '\''; }
+<CHR,STR,QIDENT>\\\" { literal += '"'; }
+<CHR,STR,QIDENT>\\x[0-9a-fA-F]{2} { literal += (char)strtol(yytext + 2, nullptr, 16); }
 
     /* Other escape */
 
@@ -87,7 +77,7 @@ OCT [0-7](_?[0-7])*
 
 <CHR,STR,QIDENT><<EOF>> { std::cerr << "Line " << literal_line << ": unterminated " << literal_kind(YY_START) << '\n'; BEGIN(INITIAL); }
 
-    /* Multiline string */
+    /* Multiline string. Extra \n between last line and ';' don't count. */
 
 \\\\ { ml.clear(); BEGIN(MLSTR); }
 
@@ -100,8 +90,9 @@ OCT [0-7](_?[0-7])*
 <MLSTR><<EOF>> { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
     /* Numbers */
-
-0x{HEX}(\.{HEX})?[pP][+-]?{DEC} { double v = float_value(yytext); std::cout << "Hex float literal: " << v << '\n'; }
+    /* What happens?: 0x1.1, 0x11p+10. */
+0x{HEX}(\.{HEX}([pP][+-]?{DEC})?|[pP][+-]?{DEC}) { double v = float_value(yytext); std::cout << "Hex float literal: " << v << '\n'; }
+0x{HEX}(\.{HEX})[pP][+-]?{DEC}? { double v = float_value(yytext); std::cout << "Hex float literal: " << v << '\n'; }
 
 0x{HEX} { unsigned long long v = int_value(yytext + 2, 16); std::cout << "Hex integer literal: " << v << '\n'; }
 
@@ -163,18 +154,18 @@ OCT [0-7](_?[0-7])*
 "var" { std::cout << "Keyword: " << yytext << '\n'; }
 "volatile" { std::cout << "Keyword: " << yytext << '\n'; }
 "while" { std::cout << "Keyword: " << yytext << '\n'; }
-
-    /* Constants */
-
-"true" { std::cout << "Boolean literal: " << yytext << '\n'; }
-"false" { std::cout << "Boolean literal: " << yytext << '\n'; }
 "null" { std::cout << "Null literal: " << yytext << '\n'; }
 "undefined" { std::cout << "Constant: " << yytext << '\n'; }
 
-    /* Integer types */
+    /* Constants */
 
-u[0-9]+ { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-i[0-9]+ { std::cout << "Signed integer type: " << yytext << '\n'; }
+"true" { std::cout << "Boolean literal(true): " << 1 << '\n'; }
+"false" { std::cout << "Boolean literal(false): " << 0 << '\n'; }
+
+    /* Integer types. u[1,65535] */
+
+u([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]) { std::cout << "Unsigned integer type: " << yytext << '\n'; }
+i([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]) { std::cout << "Signed integer type: " << yytext << '\n'; }
 
     /* Float types */
 
@@ -217,7 +208,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
 [A-Za-z_][A-Za-z0-9_]* { std::cout << "Identifier: " << yytext << '\n'; }
 
-    /* Builtin identifiers */
+    /* Builtin identifiers. Lexer allows any identifier, but later only implecated functions will be allowed  */
 
 @[a-zA-Z_][a-zA-Z0-9_]* { std::cout << "Builtin identifier: " << yytext << '\n'; }
 
@@ -317,46 +308,21 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
     /* Errors */
 
-. { std::cerr << "Line " << yylineno << ": unexpected character: " << yytext << '\n'; }
+<*>. { std::cerr << "Line " << yylineno << ": unexpected character: " << yytext << '\n'; }
 
 %%
 
-static void append_utf8(std::string& out, unsigned long codepoint) {
-    if (codepoint < 0x80) {
-        out += (char)codepoint;
-    } else if (codepoint < 0x800) {
-        out += (char)(0xC0 | (codepoint >> 6));
-        out += (char)(0x80 | (codepoint & 0x3F));
-    } else if (codepoint < 0x10000) {
-        out += (char)(0xE0 | (codepoint >> 12));
-        out += (char)(0x80 | ((codepoint >> 6) & 0x3F));
-        out += (char)(0x80 | (codepoint & 0x3F));
-    } else {
-        out += (char)(0xF0 | (codepoint >> 18));
-        out += (char)(0x80 | ((codepoint >> 12) & 0x3F));
-        out += (char)(0x80 | ((codepoint >> 6) & 0x3F));
-        out += (char)(0x80 | (codepoint & 0x3F));
-    }
-}
-
+/*! Name the literal a start condition is scanning, for error messages.
+ *  \param[in] state current start condition, normally YY_START.
+ *  \return name of the literal kind; string literal for anything but
+ *          CHR and QIDENT.
+ */
 static const char* literal_kind(int state) {
     switch (state) {
         case CHR:    return "character literal";
         case QIDENT: return "quoted identifier";
         default:     return "string literal";
     }
-}
-
-static int count_codepoints(const std::string& text) {
-    int count = 0;
-
-    for (unsigned char c : text) {
-        if ((c & 0xC0) != 0x80) {
-            ++count;
-        }
-    }
-
-    return count;
 }
 
 static std::string strip_underscores(const char* text) {
@@ -371,6 +337,13 @@ static std::string strip_underscores(const char* text) {
     return digits;
 }
 
+/*! Parse an integer literal into its value.
+ *  Values wider than 64 bits saturate: Zig comptime_int is arbitrary
+ *  precision, so this is a limit of the lexer, not a source error.
+ *  \param[in] text literal text with its base prefix already skipped.
+ *  \param[in] base 2, 8, 10 or 16.
+ *  \return the value, saturated at ULLONG_MAX.
+ */
 static unsigned long long int_value(const char* text, int base) {
     std::string digits = strip_underscores(text);
 
@@ -379,6 +352,13 @@ static unsigned long long int_value(const char* text, int base) {
     return value;
 }
 
+/*! Parse a floating-point literal into its value.
+ *  Handles both decimal and hexadecimal forms, since strtod reads the
+ *  0x1.8p3 notation itself. Values beyond double saturate to infinity;
+ *  Zig comptime_float is f128, so valid source can exceed this.
+ *  \param[in] text full literal text, prefix included.
+ *  \return the value.
+ */
 static double float_value(const char* text) {
     std::string digits = strip_underscores(text);
 
