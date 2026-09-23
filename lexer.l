@@ -36,17 +36,35 @@ OCT [0-7](_?[0-7])*
 
 "//"[^\r\n]* { std::cout << "Single-line comment: " << yytext << '\n'; }
 
-    /* Character and string literals */
+    /* Character literal */
 
 ' { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(CHR); }
 
+<CHR>[^\\'\n]+ { literal += yytext; literal_units += count_codepoints(yytext); }
+
+<CHR>' {
+    if (literal_units == 1) {
+        std::cout << "Char literal: " << literal << '\n';
+    } else {
+        std::cerr << "Line " << literal_line << ": character literal must hold exactly one character\n";
+    }
+
+    BEGIN(INITIAL);
+}
+
+    /* String literal */
+
 \" { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(STR); }
+
+<STR,QIDENT>[^\\"\n]+ { literal += yytext; }
+
+<STR>\" { std::cout << "String literal: " << literal << '\n'; BEGIN(INITIAL); }
+
+    /* Quoted identifier */
 
 @\" { literal.clear(); literal_units = 0; literal_line = yylineno; BEGIN(QIDENT); }
 
-<CHR>[^\\'\n]+ { literal += yytext; literal_units += count_codepoints(yytext); }
-
-<STR,QIDENT>[^\\"\n]+ { literal += yytext; }
+<QIDENT>\" { std::cout << "Quoted identifier: " << literal << '\n'; BEGIN(INITIAL); }
 
     /* Escape sequences */
 
@@ -59,31 +77,17 @@ OCT [0-7](_?[0-7])*
 <CHR,STR,QIDENT>\\x[0-9a-fA-F]{2} { literal += (char)strtol(yytext + 2, nullptr, 16); ++literal_units; }
 <CHR,STR,QIDENT>\\u\{[0-9a-fA-F]+\} { append_utf8(literal, strtoul(yytext + 3, nullptr, 16)); ++literal_units; }
 
+    /* Other escape */
+
 <CHR,STR,QIDENT>\\.? { std::cerr << "Line " << yylineno << ": invalid escape sequence: " << yytext << '\n'; }
 
-    /* Closing delimiters */
-
-<STR>\" { std::cout << "String literal: " << literal << '\n'; BEGIN(INITIAL); }
-
-<QIDENT>\" { std::cout << "Quoted identifier: " << literal << '\n'; BEGIN(INITIAL); }
-
-<CHR>' {
-    if (literal_units == 1) {
-        std::cout << "Char literal: " << literal << '\n';
-    } else {
-        std::cerr << "Line " << literal_line << ": character literal must hold exactly one character\n";
-    }
-
-    BEGIN(INITIAL);
-}
-
-    /* Unterminated literals */
+    /* No closing delimiter before the line or the file ends */
 
 <CHR,STR,QIDENT>\n { std::cerr << "Line " << literal_line << ": unterminated " << literal_kind(YY_START) << '\n'; BEGIN(INITIAL); }
 
 <CHR,STR,QIDENT><<EOF>> { std::cerr << "Line " << literal_line << ": unterminated " << literal_kind(YY_START) << '\n'; BEGIN(INITIAL); }
 
-    /* Strings */
+    /* Multiline string */
 
 \\\\ { ml.clear(); BEGIN(MLSTR); }
 
@@ -213,7 +217,7 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
 [A-Za-z_][A-Za-z0-9_]* { std::cout << "Identifier: " << yytext << '\n'; }
 
-    /* Builtin identifiers (@...) */
+    /* Builtin identifiers */
 
 @[a-zA-Z_][a-zA-Z0-9_]* { std::cout << "Builtin identifier: " << yytext << '\n'; }
 
