@@ -1,20 +1,6 @@
 Identifier: foo
-Identifier: bar
-Identifier: baz
-Identifier: x
-Identifier: y
-Identifier: z
-Identifier: counter
-Identifier: name
 Identifier: Point
-Identifier: Color
-Identifier: Value
-Identifier: main
-Identifier: add
-Unsigned integer type: u32
-Signed integer type: i32
-Float type: f32
-Unsigned integer type: u8
-Usize type: usize
-Isize type: isize
+Identifier: _private
+Identifier: snake_case_1
 Identifier: _
+Identifier: iffy
