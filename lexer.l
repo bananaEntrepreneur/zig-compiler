@@ -15,6 +15,7 @@ static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
 static const char* literal_kind(int state);
 static void report(int line, const std::string& message);
+static void integer_type(const char* text);
 %}
 
     /* Only DEC numbers can not start with zero */
@@ -165,10 +166,9 @@ OCT [0-7](_?[0-7])*
 "true" { std::cout << "Boolean literal(true): " << 1 << '\n'; }
 "false" { std::cout << "Boolean literal(false): " << 0 << '\n'; }
 
-    /* Integer types. [1,65535] with a prohibition of leading zeros. */
+    /* Integer types. Checked by integer_type(): bit count up to 65535, no leading zero. */
 
-u([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]) { std::cout << "Unsigned integer type: " << yytext << '\n'; }
-i([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]) { std::cout << "Signed integer type: " << yytext << '\n'; }
+[iu][0-9]+ { integer_type(yytext); }
 
     /* Float types */
 
@@ -330,6 +330,21 @@ static const char* literal_kind(int state) {
         case CHR:    return "character literal";
         case QIDENT: return "quoted identifier";
         default:     return "string literal";
+    }
+}
+
+/*! Print an integer type name or report it. Bit count
+ *  above 65535 or with a leading zero is an error.
+ */
+static void integer_type(const char* text) {
+    std::string name = text;
+
+    if (name.size() >= 3 && name[1] == '0') {
+        report(yylineno, "primitive integer type '" + name + "' has leading zero");
+    } else if (name.size() > 6 || strtoul(text + 1, nullptr, 10) > 65535) {
+        report(yylineno, "primitive integer type '" + name + "' exceeds maximum bit width of 65535");
+    } else {
+        std::cout << (name[0] == 'u' ? "Unsigned" : "Signed") << " integer type: " << name << '\n';
     }
 }
 
