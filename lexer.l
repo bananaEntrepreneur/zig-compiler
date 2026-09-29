@@ -15,7 +15,7 @@ static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
 static const char* literal_kind(int state);
 static void report(int line, const std::string& message);
-static bool validate_int_type(const char* text);
+static bool validate_int_size(const char* text);
 %}
 
     /* Only DEC numbers can not start with zero */
@@ -168,8 +168,8 @@ OCT [0-7](_?[0-7])*
 
     /* Integer types. Number in [0,65535], no leading zero. */
 
-u[0-9]+ { if (validate_int_type(yytext)) std::cout << "Unsigned integer type: " << yytext << '\n'; }
-i[0-9]+ { if (validate_int_type(yytext)) std::cout << "Signed integer type: " << yytext << '\n'; }
+u[0-9]+ { if (validate_int_size(yytext)) std::cout << "Unsigned integer type: " << yytext << '\n'; }
+i[0-9]+ { if (validate_int_size(yytext)) std::cout << "Signed integer type: " << yytext << '\n'; }
 
     /* Float types */
 
@@ -338,7 +338,7 @@ static const char* literal_kind(int state) {
  *  \param[in] text type name, such as u8 or i32.
  *  \return whether the name is a valid integer type.
  */
-static bool validate_int_type(const char* text) {
+static bool validate_int_size(const char* text) {
     std::string name = text;
 
     if (name.size() >= 3 && name[1] == '0') {
