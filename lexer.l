@@ -13,7 +13,7 @@ static int literal_line;
 
 static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
-static const char* literal_kind(int state);
+static const char* literal_type_from_condition(int condition);
 static void report(int line, const std::string& message);
 static bool validate_int_size(const char* text);
 %}
@@ -75,11 +75,11 @@ OCT [0-7](_?[0-7])*
 
 <CHR,STR,QIDENT>\\.? { report(yylineno, std::string("invalid escape sequence: ") + yytext); }
 
-    /* No closing delimiter before the line or the file ends */
+    /* No closing delimiter before the line or the file ends. Report which type of literal was left open. */
 
-<CHR,STR,QIDENT>\n { report(literal_line, std::string("unterminated ") + literal_kind(YY_START)); BEGIN(INITIAL); }
+<CHR,STR,QIDENT>\n { report(literal_line, std::string("unterminated ") + literal_type_from_condition(YY_START)); BEGIN(INITIAL); }
 
-<CHR,STR,QIDENT><<EOF>> { report(literal_line, std::string("unterminated ") + literal_kind(YY_START)); BEGIN(INITIAL); }
+<CHR,STR,QIDENT><<EOF>> { report(literal_line, std::string("unterminated ") + literal_type_from_condition(YY_START)); BEGIN(INITIAL); }
 
     /* Multiline string. Extra \n between last line and ';' don't count. */
 
@@ -321,16 +321,18 @@ static void report(int line, const std::string& message) {
     std::cerr << "error: " << message << " in line: " << line << '\n';
 }
 
-/*! Name of the start condition for error messages.
- *  \param[in] state current start condition.
- *  \return name of the literal kind.
+/*! Get type of literal that lexer reads in a start condition.
+ *  \param[in] condition number of start condition.
+ *  \return the type of literal, or an empty string for a condition that reads no literal.
  */
-static const char* literal_kind(int state) {
-    switch (state) {
+static const char* literal_type_from_condition(int condition) {
+    switch (condition) {
         case CHR:    return "character literal";
+        case STR:    return "string literal";
         case QIDENT: return "quoted identifier";
-        default:     return "string literal";
     }
+
+    return "";
 }
 
 /*! Validate integer size. A bit count above 65535
