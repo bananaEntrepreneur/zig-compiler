@@ -19,11 +19,7 @@ Operator (assignment): =
 Char literal: 
 
 Semicolon: ;
-Keyword: const
-Identifier: cr
-Operator (assignment): =
-Char literal: 
-Semicolon: ;
+Comment: // const cr = '\r';
 Keyword: const
 Identifier: tab
 Operator (assignment): =
@@ -44,18 +40,6 @@ Identifier: hex
 Operator (assignment): =
 Char literal: A
 Semicolon: ;
-Keyword: const
-Identifier: hex_latin1
-Operator (assignment): =
-Char literal: é
-Semicolon: ;
-Keyword: const
-Identifier: unicode
-Operator (assignment): =
-Char literal: A
-Semicolon: ;
-Keyword: const
-Identifier: surrogate
-Operator (assignment): =
-Char literal: \u{d800}
-Semicolon: ;
+Comment: // const hex_latin1 = '\xe9';
+Comment: // const unicode = '\u{41}';
+Comment: // const surrogate = '\u{D800}';

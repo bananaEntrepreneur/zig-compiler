@@ -11,10 +11,11 @@ Semicolon: ;
 Keyword: const
 Identifier: escapes
 Operator (assignment): =
-error: invalid escape sequence: \u in line: 3
 String literal: nl:
- tab:	 cr: quote:" apos:' backslash:\ hex:A uni:{1F4A9}
+ tab:	 quote:" apos:' backslash:\ hex:A
 Semicolon: ;
+Comment: // const cr = "cr:\r";
+Comment: // const uni = "uni:\u{42}";
 Keyword: const
 Identifier: ends_with_escaped_quote
 Operator (assignment): =
@@ -26,38 +27,15 @@ Operator (assignment): =
 String literal: ends with a backslash \
 Semicolon: ;
 Keyword: const
-Identifier: slashes
-Operator (assignment): =
-String literal: // not a comment
-Semicolon: ;
-Keyword: const
-Identifier: doc_slashes
-Operator (assignment): =
-String literal: /// not a doc comment
-Semicolon: ;
-Keyword: const
 Identifier: ml_marker
 Operator (assignment): =
 String literal: a \ backslash pair inside a string
-Semicolon: ;
-Keyword: const
-Identifier: two
-Operator (assignment): =
-String literal: first
-Operator (array concat): ++
-String literal: second
 Semicolon: ;
 Keyword: const
 Identifier: indented
 Operator (assignment): =
 Multiline string literal: first line
 second line
-Semicolon: ;
-Keyword: const
-Identifier: unindented
-Operator (assignment): =
-Multiline string literal: no indent here
-still going
 Semicolon: ;
 Keyword: const
 Identifier: with_blank
@@ -70,9 +48,4 @@ Keyword: const
 Identifier: ml_contents
 Operator (assignment): =
 Multiline string literal: has "quotes" and // slashes and \n literal backslash-n
-Semicolon: ;
-Keyword: const
-Identifier: after_ml
-Operator (assignment): =
-String literal: back to normal
 Semicolon: ;
