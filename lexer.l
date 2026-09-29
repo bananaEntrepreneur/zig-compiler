@@ -15,7 +15,7 @@ static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
 static const char* literal_kind(int state);
 static void report(int line, const std::string& message);
-static void integer_type(const char* text);
+static bool validate_int_type(const char* text);
 %}
 
     /* Only DEC numbers can not start with zero */
@@ -94,7 +94,7 @@ OCT [0-7](_?[0-7])*
 <MLSTR><<EOF>> { std::cout << "Multiline string literal: " << ml << '\n'; BEGIN(INITIAL); }
 
     /* Numbers */
-    /* Hex float may contain either a fractional part, or an exponential part, or both simultaneously.*/
+    /* Hex float may contain either a fractional part, or an exponential part, or both simultaneously. */
     /* Examples:  0x1.1p+1, 0x1.1, 0x11p+10, 0x1.1p10 */
 0x{HEX}(\.{HEX}([pP][+-]?{DEC})?|[pP][+-]?{DEC}) { double v = float_value(yytext); std::cout << "Hex float literal: " << v << '\n'; }
 
@@ -104,7 +104,7 @@ OCT [0-7](_?[0-7])*
 
 0o{OCT} { unsigned long long v = int_value(yytext + 2, 8); std::cout << "Octal integer literal: " << v << '\n'; }
 
-    /* DEC float may contain either a fractional part, or an exponential part, or both simultaneously.*/
+    /* DEC float may contain either a fractional part, or an exponential part, or both simultaneously. */
     /* Examples:  1.1e+1, 1.1, 11e+10, 1.1E10 */
 {DEC}(\.{DEC}([eE][+-]?{DEC})?|[eE][+-]?{DEC}) { double v = float_value(yytext); std::cout << "Float literal: " << v << '\n'; }
 
@@ -166,9 +166,10 @@ OCT [0-7](_?[0-7])*
 "true" { std::cout << "Boolean literal(true): " << 1 << '\n'; }
 "false" { std::cout << "Boolean literal(false): " << 0 << '\n'; }
 
-    /* Integer types. Checked by integer_type(): bit count up to 65535, no leading zero. */
+    /* Integer types. Number in [0,65535], no leading zero. */
 
-[iu][0-9]+ { integer_type(yytext); }
+u[0-9]+ { if (validate_int_type(yytext)) std::cout << "Unsigned integer type: " << yytext << '\n'; }
+i[0-9]+ { if (validate_int_type(yytext)) std::cout << "Signed integer type: " << yytext << '\n'; }
 
     /* Float types */
 
@@ -320,10 +321,9 @@ static void report(int line, const std::string& message) {
     std::cerr << "error: " << message << " in line: " << line << '\n';
 }
 
-/*! Name the literal a start condition is scanning, for error messages.
- *  \param[in] state current start condition, normally YY_START.
- *  \return name of the literal kind; string literal for anything but
- *          CHR and QIDENT.
+/*! Name of the start condition for error messages.
+ *  \param[in] state current start condition.
+ *  \return name of the literal kind.
  */
 static const char* literal_kind(int state) {
     switch (state) {
@@ -333,37 +333,39 @@ static const char* literal_kind(int state) {
     }
 }
 
-/*! Print an integer type name or report it. Bit count
- *  above 65535 or with a leading zero is an error.
+/*! Validate integer size. A bit count above 65535
+ *  or with a leading zero is reported as an error.
+ *  \param[in] text type name, such as u8 or i32.
+ *  \return whether the name is a valid integer type.
  */
-static void integer_type(const char* text) {
+static bool validate_int_type(const char* text) {
     std::string name = text;
 
     if (name.size() >= 3 && name[1] == '0') {
         report(yylineno, "primitive integer type '" + name + "' has leading zero");
-    } else if (name.size() > 6 || strtoul(text + 1, nullptr, 10) > 65535) {
-        report(yylineno, "primitive integer type '" + name + "' exceeds maximum bit width of 65535");
-    } else {
-        std::cout << (name[0] == 'u' ? "Unsigned" : "Signed") << " integer type: " << name << '\n';
+        return false;
     }
+
+    if (name.size() > 6 || strtoul(text + 1, nullptr, 10) > 65535) {
+        report(yylineno, "primitive integer type '" + name + "' exceeds maximum bit width of 65535");
+        return false;
+    }
+
+    return true;
 }
 
 static std::string strip_underscores(const char* text) {
     std::string digits;
 
     for (; *text; ++text) {
-        if (*text != '_') {
-            digits += *text;
-        }
+        if (*text != '_') digits += *text;
     }
 
     return digits;
 }
 
 /*! Parse an integer literal into its value.
- *  Values wider than 64 bits saturate: Zig comptime_int is arbitrary
- *  precision, so this is a limit of the lexer, not a source error.
- *  \param[in] text literal text with its base prefix already skipped.
+ *  \param[in] text literal with skipped base prefix.
  *  \param[in] base 2, 8, 10 or 16.
  *  \return the value, saturated at ULLONG_MAX.
  */
@@ -376,9 +378,7 @@ static unsigned long long int_value(const char* text, int base) {
 }
 
 /*! Parse a floating-point literal into its value.
- *  Handles both decimal and hexadecimal forms, since strtod reads the
- *  0x1.8p3 notation itself. Values beyond double saturate to infinity;
- *  Zig comptime_float is f128, so valid source can exceed this.
+ *  Handles both decimal and hexadecimal forms.
  *  \param[in] text full literal text, prefix included.
  *  \return the value.
  */
