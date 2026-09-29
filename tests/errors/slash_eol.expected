@@ -1,8 +1,8 @@
 Keyword: const
 Identifier: s
 Operator (assignment): =
-Line 1: invalid escape sequence: \
-Line 1: unterminated string literal
+error: invalid escape sequence: \ in line: 1
+error: unterminated string literal in line: 1
 Keyword: const
 Identifier: after
 Operator (assignment): =

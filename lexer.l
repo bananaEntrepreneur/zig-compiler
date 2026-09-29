@@ -14,6 +14,7 @@ static int literal_line;
 static unsigned long long int_value(const char* text, int base);
 static double float_value(const char* text);
 static const char* literal_kind(int state);
+static void report(int line, const std::string& message);
 %}
 
     /* Only DEC numbers can not start with zero */
@@ -39,7 +40,7 @@ OCT [0-7](_?[0-7])*
     if (literal.size() == 1) {
         std::cout << "Char literal: " << literal << '\n';
     } else {
-        std::cerr << "Line " << literal_line << ": character literal must hold exactly one character\n";
+        report(literal_line, "character literal must hold exactly one character");
     }
 
     BEGIN(INITIAL);
@@ -71,13 +72,13 @@ OCT [0-7](_?[0-7])*
 
     /* Other escape */
 
-<CHR,STR,QIDENT>\\.? { std::cerr << "Line " << yylineno << ": invalid escape sequence: " << yytext << '\n'; }
+<CHR,STR,QIDENT>\\.? { report(yylineno, std::string("invalid escape sequence: ") + yytext); }
 
     /* No closing delimiter before the line or the file ends */
 
-<CHR,STR,QIDENT>\n { std::cerr << "Line " << literal_line << ": unterminated " << literal_kind(YY_START) << '\n'; BEGIN(INITIAL); }
+<CHR,STR,QIDENT>\n { report(literal_line, std::string("unterminated ") + literal_kind(YY_START)); BEGIN(INITIAL); }
 
-<CHR,STR,QIDENT><<EOF>> { std::cerr << "Line " << literal_line << ": unterminated " << literal_kind(YY_START) << '\n'; BEGIN(INITIAL); }
+<CHR,STR,QIDENT><<EOF>> { report(literal_line, std::string("unterminated ") + literal_kind(YY_START)); BEGIN(INITIAL); }
 
     /* Multiline string. Extra \n between last line and ';' don't count. */
 
@@ -310,9 +311,14 @@ f128 { std::cout << "Float type: " << yytext << '\n'; }
 
     /* Errors */
 
-<*>. { std::cerr << "Line " << yylineno << ": unexpected character: " << yytext << '\n'; }
+<*>. { report(yylineno, std::string("unexpected character: ") + yytext); }
 
 %%
+
+/*! Print an error in the format "error: <message> in line: <line>". */
+static void report(int line, const std::string& message) {
+    std::cerr << "error: " << message << " in line: " << line << '\n';
+}
 
 /*! Name the literal a start condition is scanning, for error messages.
  *  \param[in] state current start condition, normally YY_START.
