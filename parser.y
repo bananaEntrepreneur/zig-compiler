@@ -1,6 +1,7 @@
 %token CONST
 %token FN
 %token RETURN
+%token IF
 %token ID
 %token INT
 %token PRIMITIVE_TYPE
@@ -46,7 +47,11 @@ stmt_list: %empty
 
 stmt: var_decl
     | RETURN expr ';'
+    | if_stmt
     ;
+
+if_stmt: IF '(' expr ')' block
+       ;
 
 expr: INT
     | ID
