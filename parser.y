@@ -1,4 +1,5 @@
 %token CONST
+%token VAR
 %token FN
 %token RETURN
 %token IF
@@ -26,6 +27,7 @@ decl: var_decl
     ;
 
 var_decl: CONST ID '=' expr ';'
+        | VAR ID '=' expr ';'
         ;
 
 fn_param_list_opt: %empty
