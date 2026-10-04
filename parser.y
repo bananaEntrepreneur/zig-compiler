@@ -33,6 +33,7 @@ stmt: var_decl
     ;
 
 expr: INT
+    | ID
     | PRIMITIVE_TYPE
     ;
 
