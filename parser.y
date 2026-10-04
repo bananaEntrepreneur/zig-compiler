@@ -9,6 +9,7 @@
 %token ID
 %token INT
 %token PRIMITIVE_TYPE
+%token DOT_DOT
 
 %nonassoc '<'
 %left '+'
@@ -69,8 +70,12 @@ if_stmt: IF '(' expr ')' block
 while_stmt: WHILE '(' expr ')' block
           ;
 
-for_stmt: FOR '(' expr ')' '|' ID '|' block
+for_stmt: FOR '(' for_input ')' '|' ID '|' block
         ;
+
+for_input: expr
+         | expr DOT_DOT expr
+         ;
 
 expr: INT
     | ID
