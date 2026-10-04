@@ -18,10 +18,21 @@ decl_list: %empty
          ;
 
 decl: var_decl
-    | FN ID '(' ')' expr block
+    | FN ID '(' fn_param_list_opt ')' expr block
     ;
 
 var_decl: CONST ID '=' expr ';'
+        ;
+
+fn_param_list_opt: %empty
+                 | fn_param_list
+                 ;
+
+fn_param_list: fn_param
+             | fn_param_list ',' fn_param
+             ;
+
+fn_param: ID ':' expr
         ;
 
 block: '{' stmt_list '}'
