@@ -5,6 +5,8 @@
 %token INT
 %token PRIMITIVE_TYPE
 
+%left '+'
+
 %%
 
 program: decl_list
@@ -35,6 +37,7 @@ stmt: var_decl
 expr: INT
     | ID
     | PRIMITIVE_TYPE
+    | expr '+' expr
     ;
 
 %%
