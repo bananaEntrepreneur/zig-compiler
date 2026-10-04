@@ -7,6 +7,7 @@
 
 %left '+'
 %left '*'
+%precedence '('
 
 %%
 
@@ -51,6 +52,15 @@ expr: INT
     | PRIMITIVE_TYPE
     | expr '+' expr
     | expr '*' expr
+    | expr '(' arg_list_opt ')'
     ;
+
+arg_list_opt: %empty
+            | arg_list
+            ;
+
+arg_list: expr
+        | arg_list ',' expr
+        ;
 
 %%
