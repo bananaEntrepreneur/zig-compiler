@@ -1,6 +1,8 @@
 %token CONST
+%token FN
 %token ID
 %token INT
+%token PRIMITIVE_TYPE
 
 %%
 
@@ -12,9 +14,14 @@ def_list: %empty
         ;
 
 def: CONST ID '=' expr ';'
+   | FN ID '(' ')' expr block
    ;
 
+block: '{' '}'
+     ;
+
 expr: INT
+    | PRIMITIVE_TYPE
     ;
 
 %%
