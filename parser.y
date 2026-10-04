@@ -12,7 +12,7 @@
 %nonassoc '<'
 %left '+'
 %left '*'
-%precedence '(' /* Only precedence: calls never conflict with each other, so no associativity. */
+%precedence '(' /* Only precedence. Function calls and class member accesses left parenthesis never conflict with each other, so no associativity. */
 
 %%
 
@@ -74,6 +74,7 @@ expr: INT
     | expr '+' expr
     | expr '*' expr
     | expr '(' arg_list_opt ')'
+    | expr '.' ID
     ;
 
 arg_list_opt: %empty
