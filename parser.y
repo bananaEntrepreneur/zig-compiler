@@ -13,12 +13,22 @@ def_list: %empty
         | def_list def
         ;
 
-def: CONST ID '=' expr ';'
+def: var_def
    | FN ID '(' ')' expr block
    ;
 
-block: '{' '}'
+var_def: CONST ID '=' expr ';'
+       ;
+
+block: '{' stmt_list '}'
      ;
+
+stmt_list: %empty
+         | stmt_list stmt
+         ;
+
+stmt: var_def
+    ;
 
 expr: INT
     | PRIMITIVE_TYPE
