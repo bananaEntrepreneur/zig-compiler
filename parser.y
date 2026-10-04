@@ -27,8 +27,12 @@ decl: var_decl
     | FN ID '(' fn_param_list_opt ')' expr block
     ;
 
-var_decl: CONST ID '=' expr ';'
-        | VAR ID '=' expr ';'
+var_decl: CONST ID type_opt '=' expr ';'
+        | VAR ID type_opt '=' expr ';'
+        ;
+
+type_opt: %empty
+        | ':' expr
         ;
 
 fn_param_list_opt: %empty
