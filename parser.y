@@ -6,6 +6,7 @@
 %token PRIMITIVE_TYPE
 
 %left '+'
+%left '*'
 
 %%
 
@@ -38,6 +39,7 @@ expr: INT
     | ID
     | PRIMITIVE_TYPE
     | expr '+' expr
+    | expr '*' expr
     ;
 
 %%
