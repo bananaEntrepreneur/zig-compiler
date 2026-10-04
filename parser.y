@@ -50,6 +50,7 @@ stmt_list: %empty
 
 stmt: var_decl
     | RETURN expr ';'
+    | expr '=' expr ';'
     | if_stmt
     ;
 
