@@ -5,6 +5,7 @@
 %token INT
 %token PRIMITIVE_TYPE
 
+%nonassoc '<'
 %left '+'
 %left '*'
 %precedence '('
@@ -50,6 +51,7 @@ stmt: var_decl
 expr: INT
     | ID
     | PRIMITIVE_TYPE
+    | expr '<' expr
     | expr '+' expr
     | expr '*' expr
     | expr '(' arg_list_opt ')'
