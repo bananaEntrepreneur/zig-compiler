@@ -2,6 +2,7 @@
 %token FN
 %token RETURN
 %token IF
+%token ELSE
 %token ID
 %token INT
 %token PRIMITIVE_TYPE
@@ -51,6 +52,7 @@ stmt: var_decl
     ;
 
 if_stmt: IF '(' expr ')' block
+       | IF '(' expr ')' block ELSE block
        ;
 
 expr: INT
