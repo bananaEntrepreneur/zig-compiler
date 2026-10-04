@@ -1,5 +1,6 @@
 %token CONST
 %token FN
+%token RETURN
 %token ID
 %token INT
 %token PRIMITIVE_TYPE
@@ -28,6 +29,7 @@ stmt_list: %empty
          ;
 
 stmt: var_decl
+    | RETURN expr ';'
     ;
 
 expr: INT
