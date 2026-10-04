@@ -5,6 +5,7 @@
 %token IF
 %token ELSE
 %token WHILE
+%token FOR
 %token ID
 %token INT
 %token PRIMITIVE_TYPE
@@ -12,7 +13,7 @@
 %nonassoc '<'
 %left '+'
 %left '*'
-%precedence '(' /* Only precedence. Function calls and class member accesses left parenthesis never conflict with each other, so no associativity. */
+%precedence '(' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
 %%
 
@@ -58,6 +59,7 @@ stmt: var_decl
     | expr '=' expr ';'
     | if_stmt
     | while_stmt
+    | for_stmt
     ;
 
 if_stmt: IF '(' expr ')' block
@@ -66,6 +68,9 @@ if_stmt: IF '(' expr ')' block
 
 while_stmt: WHILE '(' expr ')' block
           ;
+
+for_stmt: FOR '(' expr ')' '|' ID '|' block
+        ;
 
 expr: INT
     | ID
