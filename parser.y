@@ -4,6 +4,7 @@
 %token RETURN
 %token IF
 %token ELSE
+%token WHILE
 %token ID
 %token INT
 %token PRIMITIVE_TYPE
@@ -52,11 +53,15 @@ stmt: var_decl
     | RETURN expr ';'
     | expr '=' expr ';'
     | if_stmt
+    | while_stmt
     ;
 
 if_stmt: IF '(' expr ')' block
        | IF '(' expr ')' block ELSE block
        ;
+
+while_stmt: WHILE '(' expr ')' block
+          ;
 
 expr: INT
     | ID
