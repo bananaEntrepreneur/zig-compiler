@@ -11,7 +11,7 @@
 %nonassoc '<'
 %left '+'
 %left '*'
-%precedence '('
+%precedence '(' /* Only precedence: calls never conflict with each other, so no associativity. */
 
 %%
 
