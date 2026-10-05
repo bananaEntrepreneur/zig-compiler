@@ -71,6 +71,8 @@
 /* ===== Operators (other) ===== */
 %token DOT_STAR DOT_QUESTION RANGE DOT_DOT ARROW PIPE_PIPE
 
+%token UNDERSCORE
+
 /* ===== Operator Precedence ===== */
 
 %right '='
@@ -103,9 +105,18 @@
 
 %left '?' DOT_STAR DOT_QUESTION
 
-%token UNDERSCORE
+%right PTR_TYPE
+
+%right '!'
+
+%right CALL_CONV_EMPTY
+%right CALLCONV
+%right ALIGN_EMPTY
+%right ALIGN
 
 %precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
+
+%start program
 
 %%
 
@@ -152,7 +163,8 @@ optional_type
 
 error_union_type
     : '!' type
-    | type '!' type
+    | named_type '!' type
+    | error_set_type '!' type
     ;
 
 array_type
@@ -169,10 +181,9 @@ slice_type
     ;
 
 function_type
-    : FN '(' fn_type_param_list_opt ')' type
-    | FN '(' fn_type_param_list_opt ')' type callconv_spec
-    | FN '(' fn_type_param_list_opt ')' type callconv_spec ALIGN '(' expr ')'
+    : FN '(' fn_type_param_list_opt ')' type callconv_opt align_opt
     ;
+
 
 fn_type_param_list_opt
     : %empty
@@ -190,8 +201,16 @@ fn_type_param
     | COMPTIME ID ':' type
     | COMPTIME type
     | ID ':' type
-    | ANYTYPE
-    | RANGE
+    ;
+
+align_opt
+    : %empty %prec ALIGN_EMPTY
+    | ALIGN '(' expr ')'
+    ;
+
+callconv_opt
+    : %empty %prec CALL_CONV_EMPTY
+    | callconv_spec
     ;
 
 callconv_spec
@@ -256,7 +275,9 @@ container_field
     ;
 
 fn_method
-    : fn_method_modifiers_opt ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
+    : FN ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
+    | INLINE FN ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
+    | NOINLINE FN ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
     ;
 
 pub_fn_method
@@ -265,12 +286,8 @@ pub_fn_method
 
 fn_method_modifiers_opt
     : %empty
-    | INLINE
-    | NOINLINE
     | callconv_spec
     | ALIGN '(' expr ')'
-    | INLINE callconv_spec
-    | NOINLINE callconv_spec
     | callconv_spec ALIGN '(' expr ')'
     ;
 
@@ -313,7 +330,6 @@ error_field
 named_type
     : ID
     | QUOTED_ID
-    | BUILTIN
     | BUILTIN '(' arg_list_opt ')'
     ;
 
@@ -378,7 +394,6 @@ for_input: expr
 
 expr
     : INT
-    | ID
     | primitive_type
     | named_type
     | container_type
