@@ -103,9 +103,25 @@
 
 %left '?' DOT_STAR DOT_QUESTION
 
+%token UNDERSCORE
+
 %precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
 %%
+
+type
+    : primitive_type
+    | pointer_type
+    | optional_type
+    | error_union_type
+    | array_type
+    | slice_type
+    | function_type
+    | container_type
+    | error_set_type
+    | named_type
+    | '(' type ')'
+    ;
 
 primitive_type
     : UINT_TYPE
@@ -141,7 +157,7 @@ error_union_type
 
 array_type
     : '[' expr ']' type
-    | '[' '_' ']' type
+    | '[' UNDERSCORE ']' type
     | '[' expr ']' ALIGN '(' expr ')' type
     ;
 
@@ -182,14 +198,6 @@ callconv_spec
     : CALLCONV '(' '.' ID ')'
     ;
 
-/* ===== anonymous struct ===== */
-
-tuple_type 
-    : STRUCT '{' container_field_list_opt '}'
-    | STRUCT '{' container_field_list_opt '}' ALIGN '(' expr ')'
-    | PACKED STRUCT '{' container_field_list_opt '}'
-    ;
-
 /* ===== Container types (struct / enum / union / opaque) ===== */
 
 container_type
@@ -226,7 +234,6 @@ container_field
     | ID ':' type ALIGN '(' expr ')' '=' expr ','
     | PUB ID ':' type ALIGN '(' expr ')' ','
     | PUB ID ':' type ALIGN '(' expr ')' '=' expr ','
-    | COMPTIME ID ':' type ','
     | COMPTIME ID ':' type '=' expr ','
     | UNDERSCORE ':' type ','
 
@@ -301,8 +308,8 @@ error_field_list
     ;
 
 error_field
-    : ID
-    | ID ','
+    : ID ','
+    | ID
     ;
 
 named_type
@@ -371,15 +378,20 @@ for_input: expr
          | expr DOT_DOT expr
          ;
 
-expr: INT
+expr
+    : INT
     | ID
     | primitive_type
+    | named_type
+    | container_type
+    | error_set_type
     | expr '<' expr
     | expr '+' expr
     | expr '*' expr
     | expr '(' arg_list_opt ')'
     | expr '.' ID
     ;
+
 
 arg_list_opt: %empty
             | arg_list
