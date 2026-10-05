@@ -71,10 +71,39 @@
 /* ===== Operators (other) ===== */
 %token DOT_STAR DOT_QUESTION RANGE DOT_DOT ARROW PIPE_PIPE
 
-%nonassoc '<'
-%left '+'
-%left '*'
-%precedence '(' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
+/* ===== Operator Precedence ===== */
+
+%right '='
+%right PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ
+%right AMP_EQ PIPE_EQ CARET_EQ SHL_EQ SHR_EQ
+%right PLUS_PERCENT_EQ MINUS_PERCENT_EQ STAR_PERCENT_EQ
+%right PLUS_PIPE_EQ MINUS_PIPE_EQ STAR_PIPE_EQ SHL_PIPE_EQ
+
+%right ORELSE
+%left OR
+%left AND
+
+%nonassoc EQUAL NOTEQUAL
+%nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL
+
+%left '|'
+%left '^'
+%left '&'
+%left SHL SHR SHL_PIPE
+
+%left '+' '-' PLUS_PLUS
+%left PLUS_PERCENT MINUS_PERCENT PLUS_PIPE MINUS_PIPE
+
+%left '*' '/' '%' STAR_STAR
+%left STAR_PERCENT STAR_PIPE
+
+%right NOT
+%right UMINUS
+%right '~'
+
+%left '?' DOT_STAR DOT_QUESTION
+
+%precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
 %%
 
