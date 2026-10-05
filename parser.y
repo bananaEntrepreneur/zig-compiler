@@ -1,15 +1,75 @@
-%token CONST
-%token VAR
-%token FN
-%token RETURN
-%token IF
-%token ELSE
-%token WHILE
-%token FOR
+/* ===== Character literal ===== */
+%token CHAR
+
+/* ===== String literal ===== */
+%token STRING
+
+/* ===== Quoted identifier ===== */
+%token QUOTED_ID
+
+/* ===== Multiline string ===== */
+%token MULTILINE_STRING
+
+/* ===== Numbers ===== */
+%token FLOAT INT
+
+/* ===== Keywords ===== */
+%token ADDRSPACE ALIGN ALLOWZERO AND ANYFRAME ANYTYPE ASM
+%token BREAK CALLCONV CATCH COMPTIME CONST CONTINUE DEFER
+%token ELSE ENUM ERRDEFER ERROR EXPORT EXTERN FN FOR
+%token IF INLINE LINKSECTION NOALIAS NOINLINE NOSUSPEND
+%token OPAQUE OR ORELSE PACKED PUB RESUME RETURN STRUCT
+%token SUSPEND SWITCH TEST THREADLOCAL TRY UNION UNREACHABLE
+%token VAR VOLATILE WHILE NULL UNDEFINED
+
+/* ===== Constants ===== */
+%token TRUE FALSE
+
+/* ===== Integer types ===== */
+%token UINT_TYPE SINT_TYPE
+
+/* ===== Float types ===== */
+%token F16 F32 F64 F80 F128
+
+/* ===== Other primitive types ===== */
+%token BOOL VOID NORETURN TYPE
+%token ANYERROR ANYOPAQUE
+%token COMPTIME_INT COMPTIME_FLOAT
+
+/* ===== Pointer-sized types ===== */
+%token USIZE ISIZE
+
+/* ===== C-compatible types ===== */
+%token C_CHAR C_SHORT C_USHORT C_INT C_UINT
+%token C_LONG C_ULONG C_LONGLONG C_ULONGLONG C_LONGDOUBLE
+
+/* ===== Identifiers ===== */
 %token ID
-%token INT
-%token PRIMITIVE_TYPE
-%token DOT_DOT
+
+/* ===== Builtin identifiers ===== */
+%token BUILTIN
+
+/* ===== Operators (array) ===== */
+%token PLUS_PLUS STAR_STAR
+
+/* ===== Wrapping and saturating operators ===== */
+%token PLUS_PERCENT MINUS_PERCENT STAR_PERCENT
+%token PLUS_PIPE MINUS_PIPE STAR_PIPE SHL_PIPE
+
+/* ===== Operators (comparison) ===== */
+%token EQUAL NOTEQUAL LESS_EQUAL GREAT_EQUAL
+
+/* ===== Operators (bitwise) ===== */
+%token SHL SHR
+
+/* ===== Operators (assignment) ===== */
+%token SHL_EQ SHR_EQ PLUS_EQ MINUS_EQ STAR_EQ SLASH_EQ PERCENT_EQ
+%token AMP_EQ PIPE_EQ CARET_EQ
+%token PLUS_PERCENT_EQ MINUS_PERCENT_EQ STAR_PERCENT_EQ
+%token PLUS_PIPE_EQ MINUS_PIPE_EQ STAR_PIPE_EQ SHL_PIPE_EQ
+
+/* ===== Operators (other) ===== */
+%token DOT_STAR DOT_QUESTION RANGE DOT_DOT ARROW PIPE_PIPE
 
 %nonassoc '<'
 %left '+'
