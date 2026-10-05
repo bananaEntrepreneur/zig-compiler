@@ -107,6 +107,211 @@
 
 %%
 
+primitive_type
+    : UINT_TYPE
+    | SINT_TYPE
+    | F16 | F32 | F64 | F80 | F128
+    | BOOL | VOID | NORETURN | TYPE
+    | ANYERROR | ANYOPAQUE | ANYTYPE | ANYFRAME
+    | COMPTIME_INT | COMPTIME_FLOAT
+    | USIZE | ISIZE
+    | C_CHAR | C_SHORT | C_USHORT | C_INT | C_UINT
+    | C_LONG | C_ULONG | C_LONGLONG | C_ULONGLONG | C_LONGDOUBLE
+    ;
+
+pointer_type
+    : '*' type
+    | '*' CONST type
+    | '*' VOLATILE type
+    | '*' ALLOWZERO type
+    | '*' ALIGN '(' expr ')' type
+    | '*' ADDRSPACE '(' expr ')' type
+    | '[' '*' ']' type
+    | '[' '*' ']' ALIGN '(' expr ')' type
+     ;
+
+optional_type
+    : '?' type
+    ;
+
+error_union_type
+    : '!' type
+    | type '!' type
+    ;
+
+array_type
+    : '[' expr ']' type
+    | '[' '_' ']' type
+    | '[' expr ']' ALIGN '(' expr ')' type
+    ;
+
+slice_type
+    : '[' ']' type
+    | '[' ':' expr ']' type
+    | '[' ']' ALIGN '(' expr ')' type
+    | '[' ':' expr ']' ALIGN '(' expr ')' type
+    ;
+
+function_type
+    : FN '(' fn_type_param_list_opt ')' type
+    | FN '(' fn_type_param_list_opt ')' type callconv_spec
+    | FN '(' fn_type_param_list_opt ')' type callconv_spec ALIGN '(' expr ')'
+    ;
+
+fn_type_param_list_opt
+    : %empty
+    | fn_type_param_list
+    ;
+
+fn_type_param_list
+    : fn_type_param
+    | fn_type_param_list ',' fn_type_param
+    ;
+
+fn_type_param
+    : type
+    | NOALIAS type
+    | COMPTIME ID ':' type
+    | COMPTIME type
+    | ID ':' type
+    | ANYTYPE
+    | RANGE
+    ;
+
+callconv_spec
+    : CALLCONV '(' '.' ID ')'
+    ;
+
+/* ===== anonymous struct ===== */
+
+tuple_type 
+    : STRUCT '{' container_field_list_opt '}'
+    | STRUCT '{' container_field_list_opt '}' ALIGN '(' expr ')'
+    | PACKED STRUCT '{' container_field_list_opt '}'
+    ;
+
+/* ===== Container types (struct / enum / union / opaque) ===== */
+
+container_type
+    : STRUCT '{' container_field_list_opt '}'
+    | UNION '{' container_field_list_opt '}'
+    | UNION '(' ENUM ')' '{' container_field_list_opt '}'
+    | UNION '(' expr ')' '{' container_field_list_opt '}'
+    | ENUM '{' enum_field_list_opt '}'
+    | ENUM '(' expr ')' '{' enum_field_list_opt '}'
+    | OPAQUE '{' '}'
+    | OPAQUE '(' expr ')' '{' '}'
+    | EXTERN STRUCT '{' container_field_list_opt '}'
+    | EXTERN UNION '{' container_field_list_opt '}'
+    | PACKED STRUCT '{' container_field_list_opt '}'
+    | PACKED UNION '{' container_field_list_opt '}'
+    ;
+
+container_field_list_opt
+    : %empty
+    | container_field_list
+    ;
+
+container_field_list
+    : container_field
+    | container_field_list container_field
+    ;
+
+container_field
+    : ID ':' type ','
+    | ID ':' type '=' expr ','
+    | PUB ID ':' type ','
+    | PUB ID ':' type '=' expr ','
+    | ID ':' type ALIGN '(' expr ')' ','
+    | ID ':' type ALIGN '(' expr ')' '=' expr ','
+    | PUB ID ':' type ALIGN '(' expr ')' ','
+    | PUB ID ':' type ALIGN '(' expr ')' '=' expr ','
+    | COMPTIME ID ':' type ','
+    | COMPTIME ID ':' type '=' expr ','
+    | UNDERSCORE ':' type ','
+
+    | fn_method
+    | pub_fn_method
+
+    | CONST ID '=' expr ';'
+    | CONST ID ':' type '=' expr ';'
+    | VAR ID '=' expr ';'
+    | VAR ID ':' type '=' expr ';'
+    | VAR ID ':' type ';'
+    | PUB CONST ID '=' expr ';'
+    | PUB CONST ID ':' type '=' expr ';'
+    | PUB VAR ID '=' expr ';'
+    | PUB VAR ID ':' type '=' expr ';'
+    | PUB VAR ID ':' type ';'
+
+    | USINGNAMESPACE expr ';'
+    | PUB USINGNAMESPACE expr ';'
+    | TEST STRING block
+    | COMPTIME block
+    ;
+
+fn_method
+    : fn_method_modifiers_opt ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
+    ;
+
+pub_fn_method
+    : PUB fn_method
+    ;
+
+fn_method_modifiers_opt
+    : %empty
+    | INLINE
+    | NOINLINE
+    | callconv_spec
+    | ALIGN '(' expr ')'
+    | INLINE callconv_spec
+    | NOINLINE callconv_spec
+    | callconv_spec ALIGN '(' expr ')'
+    ;
+
+enum_field_list_opt
+    : %empty
+    | enum_field_list
+    ;
+
+enum_field_list
+    : enum_field
+    | enum_field_list enum_field
+    ;
+
+enum_field
+    : ID ','
+    | ID '=' expr ','
+    | PUB ID ','
+    | PUB ID '=' expr ','
+    ;
+
+error_set_type
+    : ERROR '{' error_field_list_opt '}'
+    ;
+
+error_field_list_opt
+    : %empty
+    | error_field_list
+    ;
+
+error_field_list
+    : error_field
+    | error_field_list error_field
+    ;
+
+error_field
+    : ID
+    | ID ','
+    ;
+
+named_type
+    : ID
+    | QUOTED_ID
+    | BUILTIN
+    | BUILTIN '(' arg_list_opt ')'
+    ;
+
 program: decl_list
        ;
 
@@ -168,7 +373,7 @@ for_input: expr
 
 expr: INT
     | ID
-    | PRIMITIVE_TYPE
+    | primitive_type
     | expr '<' expr
     | expr '+' expr
     | expr '*' expr
