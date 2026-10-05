@@ -251,8 +251,6 @@ container_field
     | PUB VAR ID ':' type '=' expr ';'
     | PUB VAR ID ':' type ';'
 
-    | USINGNAMESPACE expr ';'
-    | PUB USINGNAMESPACE expr ';'
     | TEST STRING block
     | COMPTIME block
     ;
