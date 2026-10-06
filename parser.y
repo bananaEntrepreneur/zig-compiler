@@ -109,11 +109,6 @@
 
 %right '!'
 
-%right CALL_CONV_EMPTY
-%right CALLCONV
-%right ALIGN_EMPTY
-%right ALIGN
-
 %precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
 %start program
@@ -151,10 +146,8 @@ pointer_type
     | '*' CONST type
     | '*' VOLATILE type
     | '*' ALLOWZERO type
-    | '*' ALIGN '(' expr ')' type
     | '*' ADDRSPACE '(' expr ')' type
     | '[' '*' ']' type
-    | '[' '*' ']' ALIGN '(' expr ')' type
      ;
 
 optional_type
@@ -170,18 +163,15 @@ error_union_type
 array_type
     : '[' expr ']' type
     | '[' UNDERSCORE ']' type
-    | '[' expr ']' ALIGN '(' expr ')' type
     ;
 
 slice_type
     : '[' ']' type
     | '[' ':' expr ']' type
-    | '[' ']' ALIGN '(' expr ')' type
-    | '[' ':' expr ']' ALIGN '(' expr ')' type
     ;
 
 function_type
-    : FN '(' fn_type_param_list_opt ')' type callconv_opt align_opt
+    : FN '(' fn_type_param_list_opt ')' type
     ;
 
 
@@ -203,20 +193,6 @@ fn_type_param
     | ID ':' type
     ;
 
-align_opt
-    : %empty %prec ALIGN_EMPTY
-    | ALIGN '(' expr ')'
-    ;
-
-callconv_opt
-    : %empty %prec CALL_CONV_EMPTY
-    | callconv_spec
-    ;
-
-callconv_spec
-    : CALLCONV '(' '.' ID ')'
-    ;
-
 /* ===== Container types (struct / enum / union / opaque) ===== */
 
 container_type
@@ -228,10 +204,6 @@ container_type
     | ENUM '(' expr ')' '{' enum_field_list_opt '}'
     | OPAQUE '{' '}'
     | OPAQUE '(' expr ')' '{' '}'
-    | EXTERN STRUCT '{' container_field_list_opt '}'
-    | EXTERN UNION '{' container_field_list_opt '}'
-    | PACKED STRUCT '{' container_field_list_opt '}'
-    | PACKED UNION '{' container_field_list_opt '}'
     ;
 
 container_field_list_opt
@@ -249,47 +221,25 @@ container_field
     | ID ':' type '=' expr ','
     | PUB ID ':' type ','
     | PUB ID ':' type '=' expr ','
-    | ID ':' type ALIGN '(' expr ')' ','
-    | ID ':' type ALIGN '(' expr ')' '=' expr ','
-    | PUB ID ':' type ALIGN '(' expr ')' ','
-    | PUB ID ':' type ALIGN '(' expr ')' '=' expr ','
     | COMPTIME ID ':' type '=' expr ','
     | UNDERSCORE ':' type ','
 
     | fn_method
-    | pub_fn_method
+    | PUB fn_method
 
     | CONST ID '=' expr ';'
     | CONST ID ':' type '=' expr ';'
     | VAR ID '=' expr ';'
     | VAR ID ':' type '=' expr ';'
     | VAR ID ':' type ';'
-    | PUB CONST ID '=' expr ';'
-    | PUB CONST ID ':' type '=' expr ';'
-    | PUB VAR ID '=' expr ';'
-    | PUB VAR ID ':' type '=' expr ';'
-    | PUB VAR ID ':' type ';'
-
-    | TEST STRING block
-    | COMPTIME block
     ;
 
 fn_method
-    : FN ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
-    | INLINE FN ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
-    | NOINLINE FN ID '(' fn_param_list_opt ')' type fn_method_modifiers_opt block
+    : FN ID '(' fn_param_list_opt ')' type block
+    | INLINE FN ID '(' fn_param_list_opt ')' type block
+    | NOINLINE FN ID '(' fn_param_list_opt ')' type block
     ;
 
-pub_fn_method
-    : PUB fn_method
-    ;
-
-fn_method_modifiers_opt
-    : %empty
-    | callconv_spec
-    | ALIGN '(' expr ')'
-    | callconv_spec ALIGN '(' expr ')'
-    ;
 
 enum_field_list_opt
     : %empty
