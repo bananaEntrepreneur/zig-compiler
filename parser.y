@@ -1,14 +1,24 @@
-%token CONST
-%token VAR
-%token FN
+%token CHAR
+%token STRING
+%token FLOAT INT
+
 %token RETURN
-%token IF
-%token ELSE
-%token WHILE
-%token FOR
+%token IF ELSE WHILE FOR
+%token AND OR
+%token CONST VAR STRUCT FN
+
+%token TRUE FALSE
+%token NULL UNDEFINED
+
+%token UINT_TYPE SINT_TYPE
+%token F16 F32 F64 F80 F128
+%token BOOL VOID
+%token USIZE ISIZE
+
 %token ID
-%token INT
-%token PRIMITIVE_TYPE
+
+%token BUILTIN
+
 %token DOT_DOT
 
 %nonassoc '<'
@@ -86,6 +96,8 @@ expr: INT
     | expr '(' arg_list_opt ')'
     | expr '.' ID
     ;
+    | '!' expr
+    ;`x
 
 arg_list_opt: %empty
             | arg_list
