@@ -46,6 +46,7 @@ decl_list: %empty
 
 decl: var_decl
     | FN ID '(' fn_param_list_opt ')' expr block
+    | struct_decl
     ;
 
 var_decl: CONST ID type_opt '=' expr ';'
@@ -55,6 +56,9 @@ var_decl: CONST ID type_opt '=' expr ';'
 type_opt: %empty
         | ':' expr
         ;
+struct_decl: CONST ID '=' STRUCT '{' container_field_list_opt '}'
+           ;
+
 
 fn_param_list_opt: %empty
                  | fn_param_list
@@ -65,6 +69,21 @@ fn_param_list: fn_param
              ;
 
 fn_param: ID ':' expr
+container_field_list_opt: %empty
+                        | container_field_list
+                        ;
+
+container_field_list: container_field
+                    | container_field_list container_field
+                    ;
+
+container_field: ID ':' type ','
+               | ID ':' type '=' expr ','
+               | CONST ID ':' type '=' expr ';'
+               | VAR ID ':' type '=' expr ';'
+               | fn_decl
+               ;
+
         ;
 
 block: '{' stmt_list '}'
