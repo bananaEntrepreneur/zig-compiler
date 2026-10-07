@@ -99,7 +99,7 @@
 %left '*' '/' '%' STAR_STAR
 %left STAR_PERCENT STAR_PIPE
 
-%right '!'
+%right NOT
 %right UMINUS
 %right '~'
 
@@ -107,6 +107,7 @@
 
 %right PTR_TYPE
 
+%right '!'
 
 %precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
