@@ -133,14 +133,37 @@ for_input: expr
          ;
 
 expr: INT
+    | FLOAT
+    | CHAR
+    | STRING
+    | TRUE
+    | FALSE
+    | NULL
+    | UNDEFINED
     | ID
-    | PRIMITIVE_TYPE
-    | expr '<' expr
-    | expr '+' expr
-    | expr '*' expr
+    | BUILTIN '(' arg_list_opt ')'
+    | '(' expr ')'
     | expr '(' arg_list_opt ')'
     | expr '.' ID
-    ;
+    | expr '[' expr ']'
+
+    | expr '+' expr
+    | expr '-' expr
+    | expr '*' expr
+    | expr '/' expr
+    | expr '%' expr
+
+    | expr '<' expr
+    | expr '>' expr
+    | expr LESS_EQUAL expr
+    | expr GREAT_EQUAL expr
+    | expr EQUAL expr
+    | expr NOTEQUAL expr
+
+    | expr AND expr
+    | expr OR expr
+
+    | '-' expr %prec UMINUS
     | '!' expr
     ;`x
 
