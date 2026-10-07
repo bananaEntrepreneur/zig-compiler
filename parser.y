@@ -49,8 +49,10 @@ decl: var_decl
     | struct_decl
     ;
 
-var_decl: CONST ID type_opt '=' expr ';'
-        | VAR ID type_opt '=' expr ';'
+var_decl: CONST ID ':' type '=' expr ';'      
+        | CONST ID '=' expr ';'               
+        | VAR ID ':' type '=' expr ';'
+        | VAR ID '=' expr ';'
         ;
 
 fn_decl: FN ID '(' fn_param_list_opt ')' type block
