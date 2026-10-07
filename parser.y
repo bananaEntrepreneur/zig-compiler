@@ -167,7 +167,7 @@ expr: INT
 
     | '-' expr %prec UMINUS
     | '!' expr
-    ;`x
+    ;
 
 arg_list_opt: %empty
             | arg_list
