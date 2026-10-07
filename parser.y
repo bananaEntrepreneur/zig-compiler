@@ -129,109 +129,135 @@ type: primitive_type
     ;
 
 primitive_type: UINT_TYPE
-              | SINT_TYPE
-              | F16 | F32 | F64 | F80 | F128
-              | BOOL | VOID | NORETURN | TYPE
-              | ANYERROR | ANYOPAQUE | ANYTYPE | ANYFRAME
-              | COMPTIME_INT | COMPTIME_FLOAT
-              | USIZE | ISIZE
-              | C_CHAR | C_SHORT | C_USHORT | C_INT | C_UINT
-              | C_LONG | C_ULONG | C_LONGLONG | C_ULONGLONG | C_LONGDOUBLE
-              ;
+    | SINT_TYPE
+    | F16 | F32 | F64 | F80 | F128
+    | BOOL | VOID | NORETURN | TYPE
+    | ANYERROR | ANYOPAQUE | ANYTYPE | ANYFRAME
+    | COMPTIME_INT | COMPTIME_FLOAT
+    | USIZE | ISIZE
+    | C_CHAR | C_SHORT | C_USHORT | C_INT | C_UINT
+    | C_LONG | C_ULONG | C_LONGLONG | C_ULONGLONG | C_LONGDOUBLE
+    ;
 
 pointer_type: '*' type
-            | '*' CONST type
-            | '*' VOLATILE type
-            | '*' ALLOWZERO type
-            | '*' ADDRSPACE '(' expr ')' type
-            | '[' '*' ']' type
-            ;
+    | '*' CONST type
+    | '*' VOLATILE type
+    | '*' ALLOWZERO type
+    | '*' ADDRSPACE '(' expr ')' type
+    | '[' '*' ']' type
+     ;
 
 optional_type: '?' type
-             ;
+    ;
 
 error_union_type: '!' type
-                | named_type '!' type
-                | error_set_type '!' type
-                ;
+    | named_type '!' type
+    | error_set_type '!' type
+    ;
 
 array_type: '[' expr ']' type
-          | '[' UNDERSCORE ']' type
-          ;
+    | '[' UNDERSCORE ']' type
+    ;
 
 slice_type: '[' ']' type
-          | '[' ':' expr ']' type
-          ;
+    | '[' ':' expr ']' type
+    ;
 
-function_type: FN '(' fn_param_list_opt ')' type
-             ;
+function_type: FN '(' fn_type_param_list_opt ')' type
+    ;
+
+
+fn_type_param_list_opt: %empty
+    | fn_type_param_list
+    ;
+
+fn_type_param_list: fn_type_param
+    | fn_type_param_list ',' fn_type_param
+    ;
+
+fn_type_param: type
+    | NOALIAS type
+    | COMPTIME ID ':' type
+    | COMPTIME type
+    | ID ':' type
+    ;
 
 /* ===== Container types (struct / enum / union / opaque) ===== */
 
 container_type: STRUCT '{' container_field_list_opt '}'
-              | UNION '{' container_field_list_opt '}'
-              | UNION '(' ENUM ')' '{' container_field_list_opt '}'
-              | UNION '(' expr ')' '{' container_field_list_opt '}'
-              | ENUM '{' enum_field_list_opt '}'
-              | ENUM '(' expr ')' '{' enum_field_list_opt '}'
-              | OPAQUE '{' '}'
-              | OPAQUE '(' expr ')' '{' '}'
-              ;
+    | UNION '{' container_field_list_opt '}'
+    | UNION '(' ENUM ')' '{' container_field_list_opt '}'
+    | UNION '(' expr ')' '{' container_field_list_opt '}'
+    | ENUM '{' enum_field_list_opt '}'
+    | ENUM '(' expr ')' '{' enum_field_list_opt '}'
+    | OPAQUE '{' '}'
+    | OPAQUE '(' expr ')' '{' '}'
+    ;
 
 container_field_list_opt: %empty
-                        | container_field_list
-                        ;
+    | container_field_list
+    ;
 
 container_field_list: container_field
-                    | container_field_list container_field
-                    ;
+    | container_field_list container_field
+    ;
 
 container_field: ID ':' type ','
-               | ID ':' type '=' expr ','
-               | COMPTIME ID ':' type '=' expr ','
-               | UNDERSCORE ':' type ','
+    | ID ':' type '=' expr ','
+    | PUB ID ':' type ','
+    | PUB ID ':' type '=' expr ','
+    | COMPTIME ID ':' type '=' expr ','
+    | UNDERSCORE ':' type ','
 
-               | fn_decl
+    | fn_method
+    | PUB fn_method
 
-               | CONST ID '=' expr ';'
-               | CONST ID ':' type '=' expr ';'
-               | VAR ID '=' expr ';'
-               | VAR ID ':' type '=' expr ';'
-               | VAR ID ':' type ';'
-               ;
+    | CONST ID '=' expr ';'
+    | CONST ID ':' type '=' expr ';'
+    | VAR ID '=' expr ';'
+    | VAR ID ':' type '=' expr ';'
+    | VAR ID ':' type ';'
+    ;
+
+fn_method: FN ID '(' fn_param_list_opt ')' type block
+    | INLINE FN ID '(' fn_param_list_opt ')' type block
+    | NOINLINE FN ID '(' fn_param_list_opt ')' type block
+    ;
 
 
 enum_field_list_opt: %empty
-                   | enum_field_list
-                   ;
+    | enum_field_list
+    ;
 
 enum_field_list: enum_field
-               | enum_field_list enum_field
-               ;
+    | enum_field_list enum_field
+    ;
 
 enum_field: ID ','
-          | ID '=' expr ','
-          ;
+    | ID '=' expr ','
+    | PUB ID ','
+    | PUB ID '=' expr ','
+    ;
 
 error_set_type: ERROR '{' error_field_list_opt '}'
-              ;
+    ;
 
 error_field_list_opt: %empty
-                    | error_field_list
-                    ;
+    | error_field_list
+    ;
 
 error_field_list: error_field
-                | error_field_list error_field
-                ;
+    | error_field_list error_field
+    ;
 
 error_field: ID ','
-           | ID
-           ;
+    | ID
+    ;
 
 named_type: ID
-          | QUOTED_ID
-          | BUILTIN '(' arg_list_opt ')'
-          ;
+    | QUOTED_ID
+    | BUILTIN '(' arg_list_opt ')'
+    ;
 
 program: decl_list
        ;
@@ -241,7 +267,7 @@ decl_list: %empty
          ;
 
 decl: var_decl
-    | fn_decl
+    | FN ID '(' fn_param_list_opt ')' expr block
     ;
 
 var_decl: CONST ID type_opt '=' expr ';'
@@ -252,11 +278,6 @@ type_opt: %empty
         | ':' expr
         ;
 
-fn_decl: FN ID '(' fn_param_list_opt ')' type block
-       | INLINE FN ID '(' fn_param_list_opt ')' type block
-       | NOINLINE FN ID '(' fn_param_list_opt ')' type block
-       ;
-
 fn_param_list_opt: %empty
                  | fn_param_list
                  ;
@@ -265,13 +286,8 @@ fn_param_list: fn_param
              | fn_param_list ',' fn_param
              ;
 
-fn_param: type
-        | NOALIAS type
-        | COMPTIME ID ':' type
-        | COMPTIME type
-        | ID ':' type
+fn_param: ID ':' expr
         ;
-
 
 block: '{' stmt_list '}'
      ;
