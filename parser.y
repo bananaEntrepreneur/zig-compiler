@@ -21,10 +21,19 @@
 
 %token DOT_DOT
 
-%nonassoc '<'
-%left '+'
-%left '*'
-%precedence '(' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
+%token UNDERSCORE
+
+%right '='
+%left OR
+%left AND
+%nonassoc EQUAL NOTEQUAL
+%nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL
+%left '|'
+%left '+' '-'
+%left '*' '/' '%'
+%right '!'
+%right UMINUS
+%precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
 %%
 
