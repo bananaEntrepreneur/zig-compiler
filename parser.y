@@ -116,6 +116,8 @@ stmt: var_decl
     | if_stmt
     | while_stmt
     | for_stmt
+    | block
+    | ';'
     ;
 
 if_stmt: IF '(' expr ')' block
