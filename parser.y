@@ -53,12 +53,24 @@ var_decl: CONST ID type_opt '=' expr ';'
         | VAR ID type_opt '=' expr ';'
         ;
 
-type_opt: %empty
-        | ':' expr
-        ;
 struct_decl: CONST ID '=' STRUCT '{' container_field_list_opt '}'
            ;
 
+type: primitive_type
+    | ID
+    | type '[' ']'
+    | type '[' INT ']'
+    | type '[' UNDERSCORE ']'
+    | '*' type
+    | '(' type ')'
+    ;
+
+primitive_type: UINT_TYPE
+              | SINT_TYPE
+              | F16 | F32 | F64 | F80 | F128
+              | BOOL | VOID
+              | USIZE | ISIZE
+              ;
 
 fn_param_list_opt: %empty
                  | fn_param_list
@@ -68,7 +80,6 @@ fn_param_list: fn_param
              | fn_param_list ',' fn_param
              ;
 
-fn_param: ID ':' expr
 container_field_list_opt: %empty
                         | container_field_list
                         ;
@@ -84,6 +95,7 @@ container_field: ID ':' type ','
                | fn_decl
                ;
 
+fn_param: ID ':' type
         ;
 
 block: '{' stmt_list '}'
