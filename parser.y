@@ -45,13 +45,16 @@ decl_list: %empty
          ;
 
 decl: var_decl
-    | FN ID '(' fn_param_list_opt ')' expr block
+    | fn_decl
     | struct_decl
     ;
 
 var_decl: CONST ID type_opt '=' expr ';'
         | VAR ID type_opt '=' expr ';'
         ;
+
+fn_decl: FN ID '(' fn_param_list_opt ')' type block
+       ;
 
 struct_decl: CONST ID '=' STRUCT '{' container_field_list_opt '}'
            ;
