@@ -17,6 +17,8 @@
 
 %token ERROR
 
+%token ENUM
+
 %token BUILTIN
 
 %token DOT_DOT
@@ -69,6 +71,7 @@ type: PRIMITIVE_TYPE
     | '*' type
     | '(' type ')'
     | error_set_type
+    | enum_type
     ;
 
 error_set_type: ERROR '{' error_field_list_opt '}'
@@ -85,6 +88,23 @@ error_field_list: error_field
 error_field: ID ','
            | ID
            ;
+
+enum_type: ENUM '{' enum_field_list_opt '}'
+         ;
+
+enum_field_list_opt: %empty
+                   | enum_field_list
+                   ;
+
+enum_field_list: enum_field
+               | enum_field_list enum_field
+               ;
+
+enum_field: ID ','
+          | ID
+          | ID '=' expr ','
+          | ID '=' expr
+          ;
 
 fn_param_list_opt: %empty
                  | fn_param_list
