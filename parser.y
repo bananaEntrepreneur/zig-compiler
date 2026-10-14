@@ -18,6 +18,7 @@
 %token ERROR
 
 %token ENUM
+%token UNION
 
 %token BUILTIN
 
@@ -72,6 +73,7 @@ type: PRIMITIVE_TYPE
     | '(' type ')'
     | error_set_type
     | enum_type
+    | union_type
     ;
 
 error_set_type: ERROR '{' error_field_list_opt '}'
@@ -106,6 +108,11 @@ enum_field: ID ','
           | ID '=' expr
           ;
 
+union_type: UNION '{' container_field_list_opt '}'
+          | UNION '(' ENUM ')' '{' container_field_list_opt '}'
+          | UNION '(' type ')' '{' container_field_list_opt '}'
+          ;
+          
 fn_param_list_opt: %empty
                  | fn_param_list
                  ;
