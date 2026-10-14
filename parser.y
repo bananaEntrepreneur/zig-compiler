@@ -1,6 +1,7 @@
 %token CHAR
 %token STRING
 %token FLOAT INT
+%token PRIMITIVE_TYPE
 
 %token RETURN
 %token IF ELSE WHILE FOR
@@ -10,10 +11,7 @@
 %token TRUE FALSE
 %token NULL UNDEFINED
 
-%token UINT_TYPE SINT_TYPE
-%token F16 F32 F64 F80 F128
-%token BOOL VOID
-%token USIZE ISIZE
+%token VOID
 
 %token ID
 
@@ -61,7 +59,7 @@ fn_decl: FN ID '(' fn_param_list_opt ')' type block
 struct_decl: CONST ID '=' STRUCT '{' container_field_list_opt '}'
            ;
 
-type: primitive_type
+type: PRIMITIVE_TYPE
     | ID
     | type '[' ']'
     | type '[' INT ']'
@@ -69,13 +67,6 @@ type: primitive_type
     | '*' type
     | '(' type ')'
     ;
-
-primitive_type: UINT_TYPE
-              | SINT_TYPE
-              | F16 | F32 | F64 | F80 | F128
-              | BOOL | VOID
-              | USIZE | ISIZE
-              ;
 
 fn_param_list_opt: %empty
                  | fn_param_list
