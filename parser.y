@@ -15,6 +15,8 @@
 
 %token ID
 
+%token ERROR
+
 %token BUILTIN
 
 %token DOT_DOT
@@ -66,7 +68,23 @@ type: PRIMITIVE_TYPE
     | type '[' UNDERSCORE ']'
     | '*' type
     | '(' type ')'
+    | error_set_type
     ;
+
+error_set_type: ERROR '{' error_field_list_opt '}'
+              ;
+
+error_field_list_opt: %empty
+                    | error_field_list
+                    ;
+
+error_field_list: error_field
+                | error_field_list error_field
+                ;
+
+error_field: ID ','
+           | ID
+           ;
 
 fn_param_list_opt: %empty
                  | fn_param_list
