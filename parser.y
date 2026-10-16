@@ -14,6 +14,7 @@
 %token VOID
 
 %token ID
+%token QUOTED_ID
 
 %token ERROR
 
@@ -81,6 +82,7 @@ type: PRIMITIVE_TYPE
     ;
 
 named_type: ID
+          | QUOTED_ID
           ;
 
 optional_type: '?' type
