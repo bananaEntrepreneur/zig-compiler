@@ -35,6 +35,8 @@
 %left '+' '-'
 %left '*' '/' '%'
 %right '!'
+%right '?'
+%right PTR_TYPE
 %right UMINUS
 %precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
@@ -65,16 +67,41 @@ struct_decl: CONST ID '=' STRUCT '{' container_field_list_opt '}'
            ;
 
 type: PRIMITIVE_TYPE
-    | ID
-    | type '[' ']'
-    | type '[' INT ']'
-    | type '[' UNDERSCORE ']'
-    | '*' type
-    | '(' type ')'
-    | error_set_type
+    | named_type
+    | pointer_type
+    | optional_type
+    | error_union_type
+    | array_type
+    | slice_type
+    | function_type
     | enum_type
     | union_type
+    | error_set_type
+    | '(' type ')'
     ;
+
+named_type: ID
+          ;
+
+optional_type: '?' type
+             ;
+
+array_type: '[' INT ']' type
+          | '[' UNDERSCORE ']' type
+          ;
+
+slice_type: '[' ']' type
+          | '[' ':' expr ']' type
+          ;
+
+pointer_type: '*' type %prec PTR_TYPE
+            | '[' '*' ']' type
+            ;
+
+error_union_type: '!' type
+                | ID '!' type
+                | error_set_type '!' type
+                ;
 
 error_set_type: ERROR '{' error_field_list_opt '}'
               ;
@@ -113,6 +140,9 @@ union_type: UNION '{' container_field_list_opt '}'
           | UNION '(' type ')' '{' container_field_list_opt '}'
           ;
           
+function_type: FN '(' fn_param_list_opt ')' type
+             ;
+
 fn_param_list_opt: %empty
                  | fn_param_list
                  ;
@@ -120,6 +150,9 @@ fn_param_list_opt: %empty
 fn_param_list: fn_param
              | fn_param_list ',' fn_param
              ;
+
+fn_param: ID ':' type
+        ;
 
 container_field_list_opt: %empty
                         | container_field_list
@@ -135,9 +168,6 @@ container_field: ID ':' type ','
                | VAR ID ':' type '=' expr ';'
                | fn_decl
                ;
-
-fn_param: ID ':' type
-        ;
 
 block: '{' stmt_list '}'
      ;
