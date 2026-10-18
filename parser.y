@@ -4,7 +4,7 @@
 %token PRIMITIVE_TYPE
 
 %token RETURN BREAK
-%token IF ELSE WHILE FOR
+%token IF ELSE WHILE FOR SWITCH
 %token AND OR
 %token CONST VAR STRUCT FN
 
@@ -22,6 +22,7 @@
 %token BUILTIN
 
 %token DOT_DOT
+%token ARROW
 
 %token PLUS_EQUAL MINUS_EQUAL ASTERISK_EQUAL SLASH_EQUAL PERCENT_EQUAL
 
@@ -173,6 +174,7 @@ stmt: var_decl
     | assign_expr ';'
     | unpack_list '=' expr ';'
     | if_stmt
+    | switch_expr
     | while_stmt
     | for_stmt
     | block
@@ -223,6 +225,30 @@ ptr_capture: capture
            | '|' '*' ID '|'
            ;
 
+switch_expr: SWITCH '(' expr ')' '{' switch_branch_list_opt '}'
+           ;
+
+switch_branch_list_opt: %empty
+                      | switch_branch_list
+                      | switch_branch_list ','
+                      ;
+
+switch_branch_list: switch_branch
+                  | switch_branch_list ',' switch_branch
+                  ;
+
+switch_branch: switch_case ARROW expr
+             ;
+
+switch_case: switch_item_list
+           | switch_item_list ','
+           | ELSE
+           ;
+
+switch_item_list: expr
+                | switch_item_list ',' expr
+                ;
+
 while_stmt: WHILE '(' expr ')' block
           ;
 
@@ -240,6 +266,7 @@ expr: operand
     | if_prefix expr %prec NO_ELSE
     | if_prefix expr ELSE expr
     | if_prefix expr ELSE capture expr
+    | switch_expr
     | expr '(' arg_list_opt ')'
     | expr '.' ID
     | expr '[' expr ']'
