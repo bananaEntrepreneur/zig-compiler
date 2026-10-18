@@ -52,7 +52,6 @@ decl_list: %empty
 
 decl: var_decl
     | fn_decl
-    | struct_decl
     ;
 
 var_decl: CONST ID ':' type '=' expr ';'      
@@ -63,9 +62,6 @@ var_decl: CONST ID ':' type '=' expr ';'
 
 fn_decl: FN ID '(' fn_param_list_opt ')' type block
        ;
-
-struct_decl: CONST ID '=' STRUCT '{' container_field_list_opt '}'
-           ;
 
 type: PRIMITIVE_TYPE
     | named_type
@@ -296,6 +292,7 @@ operand: INT
        | UNDERSCORE
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
+       | STRUCT '{' container_field_list_opt '}'
        ;
 
 arg_list_opt: %empty
