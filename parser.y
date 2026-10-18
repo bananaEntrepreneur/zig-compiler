@@ -179,7 +179,7 @@ stmt_list: %empty
 
 stmt: var_decl
     | RETURN expr ';'
-    | expr '=' expr ';'
+    | stmt_expr '=' expr ';'
     | if_stmt
     | while_stmt
     | for_stmt
@@ -201,17 +201,8 @@ for_input: expr
          | expr DOT_DOT expr
          ;
 
-expr: INT
-    | FLOAT
-    | CHAR
-    | STRING
-    | TRUE
-    | FALSE
-    | NULL
-    | UNDEFINED
-    | ID
-    | BUILTIN '(' arg_list_opt ')'
-    | '(' expr ')'
+expr: primary
+    | block
     | expr '(' arg_list_opt ')'
     | expr '.' ID
     | expr '[' expr ']'
@@ -231,10 +222,44 @@ expr: INT
 
     | expr AND expr
     | expr OR expr
-
-    | '-' expr %prec UMINUS
-    | '!' expr
     ;
+
+stmt_expr: primary
+         | stmt_expr '(' arg_list_opt ')'
+         | stmt_expr '.' ID
+         | stmt_expr '[' expr ']'
+
+         | stmt_expr '+' expr
+         | stmt_expr '-' expr
+         | stmt_expr '*' expr
+         | stmt_expr '/' expr
+         | stmt_expr '%' expr
+
+         | stmt_expr '<' expr
+         | stmt_expr '>' expr
+         | stmt_expr LESS_EQUAL expr
+         | stmt_expr GREAT_EQUAL expr
+         | stmt_expr EQUAL expr
+         | stmt_expr NOTEQUAL expr
+
+         | stmt_expr AND expr
+         | stmt_expr OR expr
+         ;
+
+primary: INT
+       | FLOAT
+       | CHAR
+       | STRING
+       | TRUE
+       | FALSE
+       | NULL
+       | UNDEFINED
+       | ID
+       | BUILTIN '(' arg_list_opt ')'
+       | '(' expr ')'
+       | '-' expr %prec UMINUS
+       | '!' expr
+       ;
 
 arg_list_opt: %empty
             | arg_list
