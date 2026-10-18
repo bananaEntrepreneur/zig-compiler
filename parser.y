@@ -192,6 +192,7 @@ stmt: var_decl
 
 if_stmt: IF '(' expr ')' block
        | IF '(' expr ')' block ELSE block
+       | IF '(' expr ')' block ELSE if_stmt
        ;
 
 while_stmt: WHILE '(' expr ')' block
