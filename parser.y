@@ -9,7 +9,7 @@
 %token CONST VAR STRUCT FN
 
 %token TRUE FALSE
-%token NULL UNDEFINED
+%token NULL UNDEFINED UNREACHABLE
 
 %token ID
 %token QUOTED_ID
@@ -349,6 +349,7 @@ operand: INT
        | FALSE
        | NULL
        | UNDEFINED
+       | UNREACHABLE
        | ID
        | UNDERSCORE
        | BUILTIN '(' arg_list_opt ')'
