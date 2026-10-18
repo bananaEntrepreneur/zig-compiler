@@ -245,9 +245,13 @@ switch_branch_list: switch_branch
                   | switch_branch_list ',' switch_branch
                   ;
 
-switch_branch: switch_case ARROW expr
-             | switch_case ARROW ptr_index_capture expr
+switch_branch: switch_case ARROW branch_body
+             | switch_case ARROW ptr_index_capture branch_body
              ;
+
+branch_body: expr
+           | expr assign_op expr
+           ;
 
 switch_case: switch_item_list
            | switch_item_list ','
