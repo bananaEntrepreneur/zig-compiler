@@ -3,7 +3,7 @@
 %token FLOAT INT
 %token PRIMITIVE_TYPE
 
-%token RETURN
+%token RETURN BREAK
 %token IF ELSE WHILE FOR
 %token AND OR
 %token CONST VAR STRUCT FN
@@ -179,11 +179,13 @@ stmt_list: %empty
 
 stmt: var_decl
     | RETURN expr ';'
+    | BREAK ':' ID expr ';'
     | stmt_expr '=' expr ';'
     | if_stmt
     | while_stmt
     | for_stmt
     | block
+    | ID ':' block
     | ';'
     ;
 
@@ -203,6 +205,7 @@ for_input: expr
 
 expr: operand
     | block
+    | ID ':' block
     | expr '(' arg_list_opt ')'
     | expr '.' ID
     | expr '[' expr ']'
