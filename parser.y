@@ -5,7 +5,7 @@
 
 %token RETURN BREAK
 %token IF ELSE WHILE FOR SWITCH
-%token AND OR
+%token AND OR ORELSE
 %token CONST VAR STRUCT FN
 
 %token TRUE FALSE
@@ -34,7 +34,7 @@
 %left AND
 %nonassoc EQUAL NOTEQUAL
 %nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL
-%left '|'
+%left '|' ORELSE
 %left '+' '-'
 %left '*' '/' '%'
 %right '!'
@@ -303,6 +303,7 @@ expr: operand
 
     | expr AND expr
     | expr OR expr
+    | expr ORELSE expr
     ;
 
 stmt_expr: operand
@@ -326,6 +327,7 @@ stmt_expr: operand
 
          | stmt_expr AND expr
          | stmt_expr OR expr
+         | stmt_expr ORELSE expr
          ;
 
 prefix_expr: '-' expr %prec UMINUS
