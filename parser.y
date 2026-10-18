@@ -27,6 +27,7 @@
 
 %token UNDERSCORE
 
+%precedence NO_ELSE
 %precedence ELSE RETURN BREAK
 %left OR
 %left AND
@@ -222,6 +223,7 @@ expr: operand
     | prefix_expr
     | block
     | ID ':' block
+    | IF '(' expr ')' expr %prec NO_ELSE
     | IF '(' expr ')' expr ELSE expr
     | expr '(' arg_list_opt ')'
     | expr '.' ID
