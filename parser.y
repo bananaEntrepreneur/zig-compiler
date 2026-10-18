@@ -281,6 +281,7 @@ operand: INT
        | NULL
        | UNDEFINED
        | ID
+       | UNDERSCORE
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
        ;
