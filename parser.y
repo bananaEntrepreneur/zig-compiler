@@ -217,13 +217,21 @@ if_prefix: IF '(' expr ')'
          | IF '(' expr ')' ptr_capture
          ;
 
-capture: '|' ID '|'
-       | '|' UNDERSCORE '|'
+capture: '|' capture_name '|'
        ;
 
 ptr_capture: capture
-           | '|' '*' ID '|'
+           | '|' '*' capture_name '|'
            ;
+
+ptr_index_capture: ptr_capture
+                 | '|' capture_name ',' capture_name '|'
+                 | '|' '*' capture_name ',' capture_name '|'
+                 ;
+
+capture_name: ID
+            | UNDERSCORE
+            ;
 
 switch_expr: SWITCH '(' expr ')' '{' switch_branch_list_opt '}'
            ;
@@ -238,6 +246,7 @@ switch_branch_list: switch_branch
                   ;
 
 switch_branch: switch_case ARROW expr
+             | switch_case ARROW ptr_index_capture expr
              ;
 
 switch_case: switch_item_list
