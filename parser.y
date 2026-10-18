@@ -39,7 +39,7 @@
 %right '?'
 %right PTR_TYPE
 %right UMINUS
-%precedence '(' '[' '{' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
+%precedence '(' '[' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
 %%
 
