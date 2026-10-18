@@ -181,6 +181,7 @@ stmt: var_decl
     | RETURN expr ';'
     | BREAK ':' ID expr ';'
     | stmt_expr '=' expr ';'
+    | stmt_expr ';'
     | if_stmt
     | while_stmt
     | for_stmt
