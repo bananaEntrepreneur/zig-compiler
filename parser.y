@@ -21,7 +21,7 @@
 
 %token BUILTIN
 
-%token DOT_DOT
+%token DOT_DOT DOT_DOT_DOT
 %token ARROW
 
 %token PLUS_EQUAL MINUS_EQUAL ASTERISK_EQUAL SLASH_EQUAL PERCENT_EQUAL
@@ -245,9 +245,13 @@ switch_case: switch_item_list
            | ELSE
            ;
 
-switch_item_list: expr
-                | switch_item_list ',' expr
+switch_item_list: switch_item
+                | switch_item_list ',' switch_item
                 ;
+
+switch_item: expr
+           | expr DOT_DOT_DOT expr
+           ;
 
 while_stmt: WHILE '(' expr ')' block
           ;
