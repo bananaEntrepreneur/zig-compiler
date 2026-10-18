@@ -11,8 +11,6 @@
 %token TRUE FALSE
 %token NULL UNDEFINED
 
-%token VOID
-
 %token ID
 %token QUOTED_ID
 
