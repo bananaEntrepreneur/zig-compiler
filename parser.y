@@ -231,7 +231,11 @@ expr: operand
     | '-' expr %prec UMINUS
     | '!' expr
 
+    | RETURN
     | RETURN expr
+    | BREAK
+    | BREAK expr
+    | BREAK ':' ID %prec BREAK
     | BREAK ':' ID expr %prec BREAK
     ;
 
@@ -259,7 +263,11 @@ stmt_expr: operand
          | '-' expr %prec UMINUS
          | '!' expr
 
+         | RETURN
          | RETURN expr
+         | BREAK
+         | BREAK expr
+         | BREAK ':' ID %prec BREAK
          | BREAK ':' ID expr %prec BREAK
          ;
 
