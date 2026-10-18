@@ -110,30 +110,26 @@ error_set_type: ERROR '{' error_field_list_opt '}'
 
 error_field_list_opt: %empty
                     | error_field_list
+                    | error_field_list ','
                     ;
 
-error_field_list: error_field
-                | error_field_list error_field
+error_field_list: ID
+                | error_field_list ',' ID
                 ;
-
-error_field: ID ','
-           | ID
-           ;
 
 enum_type: ENUM '{' enum_field_list_opt '}'
          ;
 
 enum_field_list_opt: %empty
                    | enum_field_list
+                   | enum_field_list ','
                    ;
 
 enum_field_list: enum_field
-               | enum_field_list enum_field
+               | enum_field_list ',' enum_field
                ;
 
-enum_field: ID ','
-          | ID
-          | ID '=' expr ','
+enum_field: ID
           | ID '=' expr
           ;
 
