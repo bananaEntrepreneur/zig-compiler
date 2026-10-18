@@ -181,8 +181,7 @@ stmt_list: %empty
 stmt: var_decl
     | RETURN expr ';'
     | BREAK ':' ID expr ';'
-    | stmt_expr '=' expr ';'
-    | stmt_expr ';'
+    | assign_expr ';'
     | if_stmt
     | while_stmt
     | for_stmt
@@ -191,9 +190,14 @@ stmt: var_decl
     | ';'
     ;
 
+assign_expr: stmt_expr '=' expr
+           | stmt_expr
+           ;
+
 if_stmt: IF '(' expr ')' block
-       | IF '(' expr ')' block ELSE block
-       | IF '(' expr ')' block ELSE if_stmt
+       | IF '(' expr ')' block ELSE stmt
+       | IF '(' expr ')' assign_expr ';'
+       | IF '(' expr ')' assign_expr ELSE stmt
        ;
 
 while_stmt: WHILE '(' expr ')' block
