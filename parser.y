@@ -203,6 +203,7 @@ for_input: expr
          ;
 
 expr: operand
+    | prefix_expr
     | block
     | ID ':' block
     | IF '(' expr ')' expr ELSE expr
@@ -225,19 +226,10 @@ expr: operand
 
     | expr AND expr
     | expr OR expr
-
-    | '-' expr %prec UMINUS
-    | '!' expr
-
-    | RETURN
-    | RETURN expr
-    | BREAK
-    | BREAK expr
-    | BREAK ':' ID %prec BREAK
-    | BREAK ':' ID expr %prec BREAK
     ;
 
 stmt_expr: operand
+         | prefix_expr
          | stmt_expr '(' arg_list_opt ')'
          | stmt_expr '.' ID
          | stmt_expr '[' expr ']'
@@ -257,17 +249,18 @@ stmt_expr: operand
 
          | stmt_expr AND expr
          | stmt_expr OR expr
-
-         | '-' expr %prec UMINUS
-         | '!' expr
-
-         | RETURN
-         | RETURN expr
-         | BREAK
-         | BREAK expr
-         | BREAK ':' ID %prec BREAK
-         | BREAK ':' ID expr %prec BREAK
          ;
+
+prefix_expr: '-' expr %prec UMINUS
+           | '!' expr
+
+           | RETURN
+           | RETURN expr
+           | BREAK
+           | BREAK expr
+           | BREAK ':' ID %prec BREAK
+           | BREAK ':' ID expr %prec BREAK
+           ;
 
 operand: INT
        | FLOAT
