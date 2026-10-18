@@ -203,11 +203,25 @@ unpack_target: CONST ID
              | stmt_expr
              ;
 
-if_stmt: IF '(' expr ')' block
-       | IF '(' expr ')' block ELSE stmt
-       | IF '(' expr ')' assign_expr ';'
-       | IF '(' expr ')' assign_expr ELSE stmt
+if_stmt: if_prefix block
+       | if_prefix block ELSE stmt
+       | if_prefix block ELSE capture stmt
+       | if_prefix assign_expr ';'
+       | if_prefix assign_expr ELSE stmt
+       | if_prefix assign_expr ELSE capture stmt
        ;
+
+if_prefix: IF '(' expr ')'
+         | IF '(' expr ')' ptr_capture
+         ;
+
+capture: '|' ID '|'
+       | '|' UNDERSCORE '|'
+       ;
+
+ptr_capture: capture
+           | '|' '*' ID '|'
+           ;
 
 while_stmt: WHILE '(' expr ')' block
           ;
@@ -223,8 +237,9 @@ expr: operand
     | prefix_expr
     | block
     | ID ':' block
-    | IF '(' expr ')' expr %prec NO_ELSE
-    | IF '(' expr ')' expr ELSE expr
+    | if_prefix expr %prec NO_ELSE
+    | if_prefix expr ELSE expr
+    | if_prefix expr ELSE capture expr
     | expr '(' arg_list_opt ')'
     | expr '.' ID
     | expr '[' expr ']'
