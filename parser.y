@@ -23,6 +23,8 @@
 
 %token DOT_DOT
 
+%token PLUS_EQUAL MINUS_EQUAL ASTERISK_EQUAL SLASH_EQUAL PERCENT_EQUAL
+
 %token UNDERSCORE
 
 %precedence ELSE RETURN BREAK
@@ -182,9 +184,17 @@ stmt: var_decl
     | ';'
     ;
 
-assign_expr: stmt_expr '=' expr
+assign_expr: stmt_expr assign_op expr
            | stmt_expr
            ;
+
+assign_op: '='
+         | PLUS_EQUAL
+         | MINUS_EQUAL
+         | ASTERISK_EQUAL
+         | SLASH_EQUAL
+         | PERCENT_EQUAL
+         ;
 
 if_stmt: IF '(' expr ')' block
        | IF '(' expr ')' block ELSE stmt
