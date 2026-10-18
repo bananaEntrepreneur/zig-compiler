@@ -27,7 +27,6 @@
 
 %token UNDERSCORE
 
-%right '='
 %left OR
 %left AND
 %nonassoc EQUAL NOTEQUAL
