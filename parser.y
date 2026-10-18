@@ -129,9 +129,9 @@ enum_field: ID
           | ID '=' expr
           ;
 
-union_type: UNION '{' container_field_list_opt '}'
-          | UNION '(' ENUM ')' '{' container_field_list_opt '}'
-          | UNION '(' type ')' '{' container_field_list_opt '}'
+union_type: UNION '{' container_members '}'
+          | UNION '(' ENUM ')' '{' container_members '}'
+          | UNION '(' type ')' '{' container_members '}'
           ;
           
 function_type: FN '(' fn_param_list_opt ')' type
@@ -148,19 +148,17 @@ fn_param_list: fn_param
 fn_param: ID ':' type
         ;
 
-container_field_list_opt: %empty
-                        | container_field_list
-                        ;
+container_members: decl_list
+                 | decl_list container_field_list
+                 | decl_list container_field_list ',' decl_list
+                 ;
 
 container_field_list: container_field
-                    | container_field_list container_field
+                    | container_field_list ',' container_field
                     ;
 
-container_field: ID ':' type ','
-               | ID ':' type '=' expr ','
-               | CONST ID ':' type '=' expr ';'
-               | VAR ID ':' type '=' expr ';'
-               | fn_decl
+container_field: ID ':' type
+               | ID ':' type '=' expr
                ;
 
 block: '{' stmt_list '}'
@@ -292,7 +290,7 @@ operand: INT
        | UNDERSCORE
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
-       | STRUCT '{' container_field_list_opt '}'
+       | STRUCT '{' container_members '}'
        ;
 
 arg_list_opt: %empty
