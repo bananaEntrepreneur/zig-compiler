@@ -27,6 +27,7 @@
 
 %token UNDERSCORE
 
+%precedence ELSE
 %left OR
 %left AND
 %nonassoc EQUAL NOTEQUAL
@@ -208,6 +209,7 @@ for_input: expr
 expr: operand
     | block
     | ID ':' block
+    | IF '(' expr ')' expr ELSE expr
     | expr '(' arg_list_opt ')'
     | expr '.' ID
     | expr '[' expr ']'
