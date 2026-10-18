@@ -176,6 +176,7 @@ stmt_list: %empty
 
 stmt: var_decl
     | assign_expr ';'
+    | unpack_list '=' expr ';'
     | if_stmt
     | while_stmt
     | for_stmt
@@ -195,6 +196,17 @@ assign_op: '='
          | SLASH_EQUAL
          | PERCENT_EQUAL
          ;
+
+unpack_list: unpack_target ',' unpack_target
+           | unpack_list ',' unpack_target
+           ;
+
+unpack_target: CONST ID
+             | CONST ID ':' type
+             | VAR ID
+             | VAR ID ':' type
+             | stmt_expr
+             ;
 
 if_stmt: IF '(' expr ')' block
        | IF '(' expr ')' block ELSE stmt
