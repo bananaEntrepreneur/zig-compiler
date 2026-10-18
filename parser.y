@@ -27,7 +27,7 @@
 
 %token UNDERSCORE
 
-%precedence ELSE
+%precedence ELSE RETURN BREAK
 %left OR
 %left AND
 %nonassoc EQUAL NOTEQUAL
@@ -179,8 +179,6 @@ stmt_list: %empty
          ;
 
 stmt: var_decl
-    | RETURN expr ';'
-    | BREAK ':' ID expr ';'
     | assign_expr ';'
     | if_stmt
     | while_stmt
@@ -236,6 +234,9 @@ expr: operand
 
     | '-' expr %prec UMINUS
     | '!' expr
+
+    | RETURN expr
+    | BREAK ':' ID expr %prec BREAK
     ;
 
 stmt_expr: operand
@@ -261,6 +262,9 @@ stmt_expr: operand
 
          | '-' expr %prec UMINUS
          | '!' expr
+
+         | RETURN expr
+         | BREAK ':' ID expr %prec BREAK
          ;
 
 operand: INT
