@@ -201,7 +201,7 @@ for_input: expr
          | expr DOT_DOT expr
          ;
 
-expr: primary
+expr: operand
     | block
     | expr '(' arg_list_opt ')'
     | expr '.' ID
@@ -222,9 +222,12 @@ expr: primary
 
     | expr AND expr
     | expr OR expr
+
+    | '-' expr %prec UMINUS
+    | '!' expr
     ;
 
-stmt_expr: primary
+stmt_expr: operand
          | stmt_expr '(' arg_list_opt ')'
          | stmt_expr '.' ID
          | stmt_expr '[' expr ']'
@@ -244,9 +247,12 @@ stmt_expr: primary
 
          | stmt_expr AND expr
          | stmt_expr OR expr
+
+         | '-' expr %prec UMINUS
+         | '!' expr
          ;
 
-primary: INT
+operand: INT
        | FLOAT
        | CHAR
        | STRING
@@ -257,8 +263,6 @@ primary: INT
        | ID
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
-       | '-' expr %prec UMINUS
-       | '!' expr
        ;
 
 arg_list_opt: %empty
