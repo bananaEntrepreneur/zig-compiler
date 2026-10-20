@@ -77,6 +77,7 @@ type: PRIMITIVE_TYPE
     | union_type
     | error_set_type
     | '(' type ')'
+    | struct_type
     ;
 
 named_type: ID
@@ -136,6 +137,9 @@ union_type: UNION '{' container_members '}'
           | UNION '(' type ')' '{' container_members '}'
           ;
           
+struct_type: STRUCT '{' container_members '}'
+           ;
+
 function_type: FN '(' fn_param_list_opt ')' type
              ;
 
@@ -358,7 +362,7 @@ operand: INT
        | UNDERSCORE
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
-       | STRUCT '{' container_members '}'
+       | struct_type
        ;
 
 arg_list_opt: %empty
