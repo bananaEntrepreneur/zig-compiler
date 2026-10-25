@@ -281,7 +281,6 @@ for_input: expr
          ;
 
 expr: operand
-    | prefix_expr
     | block
     | ID ':' block
     | if_prefix expr %prec NO_ELSE
@@ -313,7 +312,6 @@ expr: operand
     ;
 
 stmt_expr: operand
-         | prefix_expr
          | stmt_expr '(' arg_list_opt ')'
          | stmt_expr '.' ID
          | stmt_expr '[' expr ']'
@@ -338,17 +336,6 @@ stmt_expr: operand
          | stmt_expr CATCH capture expr
          ;
 
-prefix_expr: '-' expr %prec UMINUS
-           | '!' expr
-
-           | RETURN
-           | RETURN expr
-           | BREAK
-           | BREAK expr
-           | BREAK ':' ID %prec BREAK
-           | BREAK ':' ID expr %prec BREAK
-           ;
-
 operand: INT
        | FLOAT
        | CHAR
@@ -363,6 +350,16 @@ operand: INT
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
        | struct_type
+
+       | '-' expr %prec UMINUS
+       | '!' expr
+
+       | RETURN
+       | RETURN expr
+       | BREAK
+       | BREAK expr
+       | BREAK ':' ID %prec BREAK
+       | BREAK ':' ID expr %prec BREAK
        ;
 
 arg_list_opt: %empty
