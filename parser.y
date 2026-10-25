@@ -186,8 +186,11 @@ stmt: var_decl
     | ';'
     ;
 
-assign_expr: stmt_expr assign_op expr
-           | stmt_expr
+assign_expr: postfix
+           | postfix assign_op expr
+           | postfix ORELSE expr
+           | postfix CATCH expr
+           | postfix CATCH capture expr
            ;
 
 assign_op: '='
@@ -206,7 +209,7 @@ unpack_target: CONST ID
              | CONST ID ':' type
              | VAR ID
              | VAR ID ':' type
-             | stmt_expr
+             | postfix
              ;
 
 if_stmt: if_prefix block
@@ -280,16 +283,13 @@ for_input: expr
          | expr DOT_DOT expr
          ;
 
-expr: operand
+expr: postfix %prec NO_ELSE
     | block
     | ID ':' block
     | if_prefix expr %prec NO_ELSE
     | if_prefix expr ELSE expr
     | if_prefix expr ELSE capture expr
     | switch_expr
-    | expr '(' arg_list_opt ')'
-    | expr '.' ID
-    | expr '[' expr ']'
 
     | expr '+' expr
     | expr '-' expr
@@ -311,30 +311,11 @@ expr: operand
     | expr CATCH capture expr
     ;
 
-stmt_expr: operand
-         | stmt_expr '(' arg_list_opt ')'
-         | stmt_expr '.' ID
-         | stmt_expr '[' expr ']'
-
-         | stmt_expr '+' expr
-         | stmt_expr '-' expr
-         | stmt_expr '*' expr
-         | stmt_expr '/' expr
-         | stmt_expr '%' expr
-
-         | stmt_expr '<' expr
-         | stmt_expr '>' expr
-         | stmt_expr LESS_EQUAL expr
-         | stmt_expr GREAT_EQUAL expr
-         | stmt_expr EQUAL expr
-         | stmt_expr NOTEQUAL expr
-
-         | stmt_expr AND expr
-         | stmt_expr OR expr
-         | stmt_expr ORELSE expr
-         | stmt_expr CATCH expr
-         | stmt_expr CATCH capture expr
-         ;
+postfix: operand
+       | postfix '(' arg_list_opt ')'
+       | postfix '.' ID
+       | postfix '[' expr ']'
+       ;
 
 operand: INT
        | FLOAT
