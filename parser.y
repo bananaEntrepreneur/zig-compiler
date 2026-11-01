@@ -319,6 +319,7 @@ operand: INT
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
        | '.' '{' arg_list_opt '}'
+       | '.' '{' field_init_list '}'
        | container_type
 
        | '-' expr %prec UMINUS
@@ -340,5 +341,12 @@ arg_list_opt: %empty
 arg_list: expr
         | arg_list ',' expr
         ;
+
+field_init_list: field_init
+               | field_init_list ',' field_init
+               ;
+
+field_init: '.' ID '=' expr
+          ;
 
 %%
