@@ -7,7 +7,7 @@
 %token RETURN BREAK
 %token IF ELSE WHILE FOR SWITCH
 %token AND OR ORELSE CATCH
-%token CONST VAR STRUCT FN
+%token CONST VAR STRUCT FN PUB
 
 %token TRUE FALSE
 %token NULL UNDEFINED UNREACHABLE
@@ -54,6 +54,8 @@ decl_list: %empty
 
 decl: var_decl
     | fn_decl
+    | PUB var_decl
+    | PUB fn_decl
     ;
 
 var_decl: CONST ID ':' type '=' expr ';'      
