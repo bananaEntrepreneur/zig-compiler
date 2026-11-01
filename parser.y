@@ -75,11 +75,9 @@ type: PRIMITIVE_TYPE
     | array_type
     | slice_type
     | function_type
-    | enum_type
-    | union_type
     | error_set_type
     | '(' type ')'
-    | struct_type
+    | container_type
     ;
 
 named_type: ID
@@ -118,8 +116,12 @@ error_field_list: ID
                 | error_field_list ',' ID
                 ;
 
-enum_type: ENUM '{' enum_field_list_opt '}'
-         ;
+container_type: STRUCT '{' container_members '}'
+              | UNION '{' container_members '}'
+              | UNION '(' ENUM ')' '{' container_members '}'
+              | UNION '(' type ')' '{' container_members '}'
+              | ENUM '{' enum_field_list_opt '}'
+              ;
 
 enum_field_list_opt: %empty
                    | enum_field_list
@@ -134,13 +136,6 @@ enum_field: ID
           | ID '=' expr
           ;
 
-union_type: UNION '{' container_members '}'
-          | UNION '(' ENUM ')' '{' container_members '}'
-          | UNION '(' type ')' '{' container_members '}'
-          ;
-          
-struct_type: STRUCT '{' container_members '}'
-           ;
 
 function_type: FN '(' fn_param_list_opt ')' type
              ;
@@ -332,7 +327,7 @@ operand: INT
        | UNDERSCORE
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
-       | struct_type
+       | container_type
 
        | '-' expr %prec UMINUS
        | '!' expr
