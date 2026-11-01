@@ -179,7 +179,7 @@ stmt: var_decl
 
 assign_expr: postfix
            | postfix assign_op expr %prec NO_ELSE
-           | assign_expr infix
+           | assign_expr expr_tail
            ;
 
 assign_op: '='
@@ -274,28 +274,28 @@ expr: postfix %prec NO_ELSE
     | if_prefix expr ELSE expr
     | if_prefix expr ELSE capture expr
     | switch_expr
-    | expr infix
+    | expr expr_tail
     ;
 
-infix: '+' expr
-     | '-' expr
-     | '*' expr
-     | '/' expr
-     | '%' expr
+expr_tail: '+' expr
+         | '-' expr
+         | '*' expr
+         | '/' expr
+         | '%' expr
 
-     | '<' expr
-     | '>' expr
-     | LESS_EQUAL expr
-     | GREAT_EQUAL expr
-     | EQUAL expr
-     | NOTEQUAL expr
+         | '<' expr
+         | '>' expr
+         | LESS_EQUAL expr
+         | GREAT_EQUAL expr
+         | EQUAL expr
+         | NOTEQUAL expr
 
-     | AND expr
-     | OR expr
-     | ORELSE expr
-     | CATCH expr
-     | CATCH capture expr
-     ;
+         | AND expr
+         | OR expr
+         | ORELSE expr
+         | CATCH expr
+         | CATCH capture expr
+         ;
 
 postfix: operand
        | postfix '(' arg_list_opt ')'
