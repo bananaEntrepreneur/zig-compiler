@@ -2,6 +2,7 @@
 %token STRING
 %token FLOAT INT
 %token PRIMITIVE_TYPE
+%token VOID
 
 %token RETURN BREAK
 %token IF ELSE WHILE FOR SWITCH
@@ -63,6 +64,7 @@ var_decl: CONST ID ':' type '=' expr ';'
         ;
 
 fn_decl: FN ID '(' fn_param_list_opt ')' type block
+       | FN ID '(' fn_param_list_opt ')' VOID block
        ;
 
 type: PRIMITIVE_TYPE
