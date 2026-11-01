@@ -318,6 +318,7 @@ operand: INT
        | UNDERSCORE
        | BUILTIN '(' arg_list_opt ')'
        | '(' expr ')'
+       | '.' '{' arg_list_opt '}'
        | container_type
 
        | '-' expr %prec UMINUS
