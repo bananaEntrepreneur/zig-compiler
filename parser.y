@@ -4,7 +4,7 @@
 %token PRIMITIVE_TYPE
 %token VOID
 
-%token RETURN BREAK
+%token RETURN BREAK TRY
 %token IF ELSE WHILE FOR SWITCH
 %token AND OR ORELSE CATCH
 %token CONST VAR STRUCT FN PUB
@@ -322,6 +322,7 @@ operand: INT
 
        | '-' expr %prec UMINUS
        | '!' expr
+       | TRY expr %prec UMINUS
 
        | RETURN
        | RETURN expr
