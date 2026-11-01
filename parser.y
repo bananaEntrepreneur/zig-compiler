@@ -40,7 +40,6 @@
 %left '*' '/' '%'
 %right '!'
 %right '?'
-%right PTR_TYPE
 %right UMINUS
 %precedence '(' '[' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
 
@@ -69,7 +68,6 @@ fn_decl: FN ID '(' fn_param_list_opt ')' type block
 
 type: PRIMITIVE_TYPE
     | named_type
-    | pointer_type
     | optional_type
     | error_union_type
     | array_type
@@ -94,10 +92,6 @@ array_type: '[' INT ']' type
 slice_type: '[' ']' type
           | '[' ':' expr ']' type
           ;
-
-pointer_type: '*' type %prec PTR_TYPE
-            | '[' '*' ']' type
-            ;
 
 error_union_type: '!' type
                 | ID '!' type
@@ -216,20 +210,15 @@ if_stmt: if_prefix block
        ;
 
 if_prefix: IF '(' expr ')'
-         | IF '(' expr ')' ptr_capture
+         | IF '(' expr ')' capture
          ;
 
 capture: '|' capture_name '|'
        ;
 
-ptr_capture: capture
-           | '|' '*' capture_name '|'
-           ;
-
-ptr_index_capture: ptr_capture
-                 | '|' capture_name ',' capture_name '|'
-                 | '|' '*' capture_name ',' capture_name '|'
-                 ;
+index_capture: capture
+             | '|' capture_name ',' capture_name '|'
+             ;
 
 capture_name: ID
             | UNDERSCORE
@@ -248,7 +237,7 @@ switch_branch_list: switch_branch
                   ;
 
 switch_branch: switch_case ARROW branch_body
-             | switch_case ARROW ptr_index_capture branch_body
+             | switch_case ARROW index_capture branch_body
              ;
 
 branch_body: expr
