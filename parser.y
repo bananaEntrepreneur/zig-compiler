@@ -219,10 +219,6 @@ if_prefix: IF '(' expr ')'
 capture: '|' capture_name '|'
        ;
 
-index_capture: capture
-             | '|' capture_name ',' capture_name '|'
-             ;
-
 capture_name: ID
             | UNDERSCORE
             ;
@@ -240,7 +236,7 @@ switch_branch_list: switch_branch
                   ;
 
 switch_branch: switch_case ARROW branch_body
-             | switch_case ARROW index_capture branch_body
+             | switch_case ARROW capture branch_body
              ;
 
 branch_body: expr
