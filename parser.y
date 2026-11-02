@@ -119,6 +119,19 @@ container_type: STRUCT '{' container_members '}'
               | ENUM '{' enum_field_list_opt '}'
               ;
 
+container_members: decl_list
+                 | decl_list container_field_list
+                 | decl_list container_field_list ',' decl_list
+                 ;
+
+container_field_list: container_field
+                    | container_field_list ',' container_field
+                    ;
+
+container_field: ID ':' type
+               | ID ':' type '=' expr
+               ;
+               
 enum_field_list_opt: %empty
                    | enum_field_list
                    | enum_field_list ','
@@ -146,19 +159,6 @@ fn_param_list: fn_param
 
 fn_param: ID ':' type
         ;
-
-container_members: decl_list
-                 | decl_list container_field_list
-                 | decl_list container_field_list ',' decl_list
-                 ;
-
-container_field_list: container_field
-                    | container_field_list ',' container_field
-                    ;
-
-container_field: ID ':' type
-               | ID ':' type '=' expr
-               ;
 
 block: '{' stmt_list '}'
      ;
