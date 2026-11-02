@@ -41,7 +41,7 @@
 %right '!'
 %right '?'
 %right UMINUS
-%precedence '(' '[' '.' /* Function calls and class member accesses '(' never conflict with each other, so no associativity. */
+%left '(' '[' '.'
 
 %%
 
