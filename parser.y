@@ -96,7 +96,7 @@ slice_type: '[' ']' type
           ;
 
 error_union_type: '!' type
-                | ID '!' type
+                | named_type '!' type
                 | error_set_type '!' type
                 ;
 
