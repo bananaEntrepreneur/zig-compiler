@@ -1,0 +1,40 @@
+%token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT
+%token INT FLOAT CHAR BOOL VOID
+
+%right '='
+%left OR
+%left AND
+%left '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
+%left '+' '-'
+%left '*' '/' '%'
+%right UMINUS NOT
+%left '[' '.'
+%nonassoc '('
+
+%%
+
+program: decl_list
+       ;
+
+decl_list: %empty
+         | decl_list decl
+         ;
+        
+decl: CONST ID '=' expr ';'
+    | CONST ID ':' type '=' expr ';'
+    | VAR ID '=' expr ';'
+    | VAR ID ':' type '=' expr ';'
+    ;
+
+type: INT
+    | FLOAT
+    | CHAR
+    | BOOL
+    | VOID
+    | ID
+    | array_type
+    | container_type
+    ;
+
+
+
