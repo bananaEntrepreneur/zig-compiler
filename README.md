@@ -7,7 +7,7 @@ Reference for the subset of Zig.
 Lowercase names are nonterminals, uppercase names are tokens, and a quoted character is a token of its own. Lists are left recursive, and a name ending in `_opt` may be empty. The `expr` rule is split across sections, and each section holds the alternatives for its own construct.
 
 ```yacc
-%token CONST VAR FN PUB IF ELSE WHILE FOR BREAK CONTINUE RETURN STRUCT ENUM UNION
+%token CONST VAR FN PUB IF ELSE WHILE FOR BREAK CONTINUE RETURN STRUCT ENUM
 %token AND OR TRUE FALSE UNDEFINED
 %token ID INT FLOAT CHAR STRING PRIMITIVE_TYPE BUILTIN
 %token EQUAL NOT_EQUAL LESS_EQUAL GREAT_EQUAL DOT_DOT
@@ -28,11 +28,11 @@ A type is a primitive type, the name of a user-defined type, or an array type.
 
 ## User-defined type
 
-In other words, a container: struct, enum and union. A container is a value, so it is declared by assigning it to a `const`, as in `const Point = struct { ... };`.
+In other words, a container: struct and enum. A container is a value, so it is declared by assigning it to a `const`, as in `const Point = struct { ... };`.
 
-A struct lists fields with their types. A function declared inside the struct is a method, and `value.method(args)` calls it with the value as the first argument. An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. A union holds one of its fields at a time. It can be tagged with `union(enum)` or with an existing enum, `union(Tag)`. Enum members are bare names, and a tagged union may use a bare name for a field that holds no value. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
+A struct lists fields with their types. A function declared inside the struct is a method, and `value.method(args)` calls it with the value as the first argument. An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
 
-One `members` rule serves all three containers. The parser takes a typed or an untyped field anywhere, and the semantic stage checks that the field fits its container. Fields come first, then declarations, and every field ends with a comma.
+One `members` rule serves both containers. The parser takes a typed or an untyped field anywhere, and the semantic stage checks that the field fits its container. Fields come first, then declarations, and every field ends with a comma.
 
 ## Operator
 
@@ -241,11 +241,6 @@ const Color = enum(u2) {
     red,
     green,
     blue,
-};
-
-const Shape = union(enum) {
-    circle: f32,
-    empty,
 };
 
 fn sign(n: i32) i32 {

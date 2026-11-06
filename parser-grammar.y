@@ -1,5 +1,5 @@
 %token CONST VAR PUB ID PRIMITIVE_TYPE
-%token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT ENUM UNION
+%token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT ENUM
 %token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
 
 %nonassoc ELSE
@@ -74,9 +74,6 @@ expr: container_type
 container_type: STRUCT '{' members '}'
               | ENUM '{' members '}'
               | ENUM '(' type ')' '{' members '}'
-              | UNION '{' members '}'
-              | UNION '(' ENUM ')' '{' members '}'
-              | UNION '(' type ')' '{' members '}'
               ;
 
 members: field_list_opt decl_list
