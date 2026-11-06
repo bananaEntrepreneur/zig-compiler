@@ -1,3 +1,4 @@
+%token CONST VAR PUB ID
 %token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT
 %token INT FLOAT CHAR BOOL VOID
 
@@ -20,11 +21,19 @@ decl_list: %empty
          | decl_list decl
          ;
         
-decl: CONST ID '=' expr ';'
-    | CONST ID ':' type '=' expr ';'
-    | VAR ID '=' expr ';'
-    | VAR ID ':' type '=' expr ';'
+decl: pub_opt var_decl
+    | pub_opt fn_decl
     ;
+
+pub_opt: %empty
+       | PUB
+       ;
+
+var_decl: CONST ID '=' expr ';'
+        | CONST ID ':' type '=' expr ';'
+        | VAR ID '=' expr ';'
+        | VAR ID ':' type '=' expr ';'
+        ;
 
 type: INT
     | FLOAT

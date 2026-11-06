@@ -20,29 +20,6 @@ Lowercase names are nonterminals, uppercase names are tokens, and a quoted chara
 
 A source file is a list of declarations. `const` binds a name to a value that cannot change, `var` declares a variable that can, and `fn` declares a function. A variable must be initialized, and `undefined` stands for "no value yet". The type after the name may be left out when the value fixes it. `pub` makes a declaration visible to other files, and the entry point `main` has to be `pub`. A top-level declaration can be used above the line that declares it. File is implicit struct.
 
-```yacc
-program: decl_list
-       ;
-
-decl_list: %empty
-         | decl_list decl
-         ;
-
-decl: pub_opt var_decl
-    | pub_opt fn_decl
-    ;
-
-pub_opt: %empty
-       | PUB
-       ;
-
-var_decl: CONST ID '=' expr ';'
-        | CONST ID ':' type '=' expr ';'
-        | VAR ID '=' expr ';'
-        | VAR ID ':' type '=' expr ';'
-        ;
-```
-
 ## Primitive type
 
 Integers, floats, `bool` and `void`. The integers are `i8`, `i16`, `i32`, `i64`, and `u8`, `u16`, `u32`, `u64`. The floats are `f32` and `f64`. Zig allows an integer of any width up to 65535 bits. The semantic stage decides which of them the compiler supports.
