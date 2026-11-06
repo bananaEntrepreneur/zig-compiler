@@ -1,6 +1,5 @@
-%token CONST VAR PUB ID
+%token CONST VAR PUB ID PRIMITIVE_TYPE
 %token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT
-%token INT FLOAT CHAR BOOL VOID
 
 %right '='
 %left OR
@@ -35,11 +34,7 @@ var_decl: CONST ID '=' expr ';'
         | VAR ID ':' type '=' expr ';'
         ;
 
-type: INT
-    | FLOAT
-    | CHAR
-    | BOOL
-    | VOID
+type: PRIMITIVE_TYPE
     | ID
     | array_type
     | container_type

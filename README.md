@@ -26,13 +26,6 @@ Integers, floats, `bool` and `void`. The integers are `i8`, `i16`, `i32`, `i64`,
 
 A type is a primitive type, the name of a user-defined type, or an array type.
 
-```yacc
-type: PRIMITIVE_TYPE
-    | ID
-    | array_type
-    ;
-```
-
 ## User-defined type
 
 In other words, a container: struct, enum and union. A container is a value, so it is declared by assigning it to a `const`, as in `const Point = struct { ... };`.
