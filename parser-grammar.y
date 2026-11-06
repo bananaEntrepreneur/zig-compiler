@@ -69,6 +69,12 @@ expr: container_type
     | TRUE
     | FALSE
     | UNDEFINED
+
+    | expr '[' expr ']'
+    | array_type init_body
+
+    | '.' init_body
+    | expr init_body
     ;
 
 container_type: STRUCT '{' members '}'
@@ -90,3 +96,22 @@ field_list: field
 field: ID ':' type ','
      | ID ','
      ;
+
+array_type: '[' expr ']' type
+          ;
+
+init_body: '{' init_list_opt '}'
+         ;
+
+init_list_opt: %empty
+             | init_list
+             | init_list ','
+             ;
+
+init_list: init_item
+         | init_list ',' init_item
+         ;
+
+init_item: expr
+         | '.' ID '=' expr
+         ;

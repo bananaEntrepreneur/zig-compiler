@@ -46,40 +46,13 @@ An operand is a name, a literal, or an expression in parentheses.
 
 `[N]T` is an array of `N` items of type `T`. `N` is an expression known at compile time, and `[_]T{ ... }` lets the compiler count the items. `array[i]` reads an item, and `array.len` is the length. Arrays nest, so `[4][5]f32` is four arrays of five floats.
 
-```yacc
-array_type: '[' expr ']' type
-          ;
-
-expr: expr '[' expr ']'
-    | array_type init_body
-    ;
-```
-
 `_` in `[_]` is read as an `ID`, and the semantic stage gives it the meaning "count the items".
 
 ### Anonymous struct literal
 
-`.{ .x = 1, .y = 2 }` builds a struct value without naming its type, which comes from the place that receives the value. `.{ a, b }` is the same form with plain expressions, and `.{}` is empty. The call `std.debug.print("{} {}\n", .{ a, b })` uses it to pass its arguments. A type in front of the braces, as in `Point{ .x = 1, .y = 2 }` or `[_]i32{ 1, 2, 3 }`, gives the literal that type.
+`.{ .x = 1, .y = 2 }` builds a struct value without naming its type, which comes from the place that receives the value. `.{ a, b }` is the same form with plain expressions, and `.{}` is empty. The call `std.debug.print("{} {}\n", .{ a, b })` uses it to pass its arguments. A type in front of the braces, as in `Point{ .x = 1, .y = 2 }` or `[_]i32{ 1, 2, 3 }`, gives the literal that type. A comma may follow the last item, so a literal can be split over several lines.
 
-```yacc
-expr: '.' init_body
-    | expr init_body
-    ;
-
-init_body: '{' '}'
-         | '{' arg_list '}'
-         | '{' field_init_list '}'
-         ;
-
-field_init_list: field_init
-               | field_init_list ',' field_init
-               ;
-
-field_init: '.' ID '=' expr
-          ;
-```
-
-`expr init_body` also accepts forms with no meaning, such as `1{}`, and the semantic stage rejects them.
+`expr init_body` also accepts forms with no meaning, such as `1{}` or `.{ 1, .x = 2 }`, and the semantic stage rejects them.
 
 ## Function
 
