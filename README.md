@@ -32,36 +32,6 @@ In other words, a container: struct, enum and union. A container is a value, so 
 
 A struct lists fields with their types. A function declared inside the struct is a method, and `value.method(args)` calls it with the value as the first argument. An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. A union holds one of its fields at a time. It can be tagged with `union(enum)` or with an existing enum, `union(Tag)`. Enum members are bare names, and a tagged union may use a bare name for a field that holds no value. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
 
-```yacc
-expr: container_type
-    | expr '.' ID
-    | '.' ID
-    ;
-
-container_type: STRUCT '{' members '}'
-              | ENUM '{' members '}'
-              | ENUM '(' type ')' '{' members '}'
-              | UNION '{' members '}'
-              | UNION '(' ENUM ')' '{' members '}'
-              | UNION '(' type ')' '{' members '}'
-              ;
-
-members: field_list_opt decl_list
-       ;
-
-field_list_opt: %empty
-              | field_list
-              ;
-
-field_list: field
-          | field_list field
-          ;
-
-field: ID ':' type ','
-     | ID ','
-     ;
-```
-
 One `members` rule serves all three containers. The parser takes a typed or an untyped field anywhere, and the semantic stage checks that the field fits its container. Fields come first, then declarations, and every field ends with a comma.
 
 ## Operator

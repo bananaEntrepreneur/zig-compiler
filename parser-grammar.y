@@ -1,5 +1,5 @@
 %token CONST VAR PUB ID PRIMITIVE_TYPE
-%token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT
+%token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT ENUM UNION
 
 %right '='
 %left OR
@@ -40,5 +40,30 @@ type: PRIMITIVE_TYPE
     | container_type
     ;
 
+expr: container_type
+    | expr '.' ID
+    | '.' ID
+    ;
 
+container_type: STRUCT '{' members '}'
+              | ENUM '{' members '}'
+              | ENUM '(' type ')' '{' members '}'
+              | UNION '{' members '}'
+              | UNION '(' ENUM ')' '{' members '}'
+              | UNION '(' type ')' '{' members '}'
+              ;
 
+members: field_list_opt decl_list
+       ;
+
+field_list_opt: %empty
+              | field_list
+              ;
+
+field_list: field
+          | field_list field
+          ;
+
+field: ID ':' type ','
+     | ID ','
+     ;
