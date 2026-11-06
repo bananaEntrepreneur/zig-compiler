@@ -1,6 +1,6 @@
 # zig-0.17-compiler
 
-Reference for the subset of Zig.
+Reference for the subset of Zig. It's based on official Zig reference, but implement it's own logic. [parser-grammar.y](parser-grammar.y) contain only this grammar.
 
 ## Notation
 
@@ -10,19 +10,19 @@ The grammar is in [parser-grammar.y](parser-grammar.y). Lowercase names there ar
 
 ## Declaration
 
-A source file is a list of declarations. `const` binds a name to a value that cannot change, `var` declares a variable that can, and `fn` declares a function. A variable must be initialized, and `undefined` stands for "no value yet". The type after the name may be left out when the value fixes it. `pub` makes a declaration visible to other files, and the entry point `main` has to be `pub`. A top-level declaration can be used above the line that declares it. File is implicit struct.
+A source file is a list of declarations. `const` binds a name to a value that cannot change, `var` declares a variable that can, and `fn` declares a function. A variable must be initialized, and `undefined` stands for "no value yet". The type after the name may be left out when the value fixes it. `pub` makes a declaration visible to other files, and the entry point `main` has to be `pub`. A top-level declaration can be used above the line that declares it. **File is implicit struct.**
 
 ## Primitive type
 
-Integers, floats, `bool` and `void`. The integers are `i8`, `i16`, `i32`, `i64`, and `u8`, `u16`, `u32`, `u64`. The floats are `f32` and `f64`. Zig allows an integer of any width up to 65535 bits. The semantic stage decides which of them the compiler supports.
-
-A type is a primitive type, the name of a user-defined type, or an array type.
+Integers, floats, `bool` and `void`. The integers are `i8`, `i16`, `i32`, `i64`, and `u8`, `u16`, `u32`, `u64`. The floats are `f32` and `f64`. Zig allows an integer of any width up to 65535 bits. Signed integer can't have bit width 0.
 
 ## User-defined type
 
 In other words, a container: struct and enum. A container is a value, so it is declared by assigning it to a `const`, as in `const Point = struct { ... };`.
 
-A struct lists fields with their types. A function declared inside the struct is a method, and `value.method(args)` calls it with the value as the first argument. An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
+A struct lists fields with their types. A function declared inside the struct is a method, and `value.method(args)` calls it with the value as the first argument. 
+
+An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
 
 One `members` rule serves both containers. The parser takes a typed or an untyped field anywhere, and the semantic stage checks that the field fits its container. Fields come first, then declarations, and every field ends with a comma.
 
@@ -54,7 +54,7 @@ A call is an expression followed by arguments in parentheses. A builtin call is 
 
 ## Block
 
-Blocks are used to limit the scope of variable declarations. A block is a list of statements between `{` and `}`, and a name declared inside it is not visible outside. In Zig a block is also an expression, but here it is only a statement. Treating it as an expression makes `{ ... } -x;` ambiguous, because it reads both as two statements and as one subtraction.
+Blocks are used to limit the scope of variable declarations. A block is a list of statements between `{` and `}`, and a name declared inside it is not visible outside. In Zig a block is also an expression, but here it is only a statement. Treating it as an expression makes `{ ... } -x;` not supported, because it reads both as two statements and as one subtraction.
 
 A statement is a local declaration, an expression followed by `;` (in practice a call), an assignment, `return`, `break`, `continue`, a nested block, or an `if`, `while` or `for`.
 
@@ -66,10 +66,10 @@ A while loop is used to repeatedly execute a block until some condition is no lo
 
 ## For
 
-A for loop goes over the items of an array and names each one between `|` and `|`. A range `a..b` goes over the integers from `a` up to but not including `b`. The name has to be there, and `_` can stand in when the item is not used.
+A for loop goes over the items of an array and names each one between `|` and `|`. A range `a..b` goes over the integers from `a` up to but not including `b`. The name has to be there, and `_` used when the item is not used.
 
 ## If
 
 An `if` runs its first block when the condition is true and the block after `else` otherwise. `else if` chains another test. Braces are required around every block.
 
-As an expression, `if` picks one of two values and needs the `else` part. Zig has no `?:` operator, and this form takes its place.
+As an expression, `if` picks one of two values and needs the `else` part.
