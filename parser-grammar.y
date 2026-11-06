@@ -1,6 +1,7 @@
 %token CONST VAR FN PUB ID PRIMITIVE_TYPE BUILTIN
 %token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT ENUM
 %token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
+%token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 
 %nonassoc ELSE
 %left OR
@@ -140,3 +141,38 @@ arg_list_opt: %empty
 arg_list: expr
         | arg_list ',' expr
         ;
+
+block: '{' stmt_list_opt '}'
+     ;
+
+stmt_list_opt: %empty
+             | stmt_list
+             ;
+
+stmt_list: stmt
+         | stmt_list stmt
+         ;
+
+stmt: var_decl
+    | expr ';'
+    | assign ';'
+    | RETURN ';'
+    | RETURN expr ';'
+    | BREAK ';'
+    | CONTINUE ';'
+    | block
+    | if_stmt
+    | while_stmt
+    | for_stmt
+    ;
+
+assign: expr assign_op expr
+      ;
+
+assign_op: '='
+         | ADD_ASSIGN
+         | SUB_ASSIGN
+         | MUL_ASSIGN
+         | DIV_ASSIGN
+         | MOD_ASSIGN
+         ;

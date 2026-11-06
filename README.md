@@ -68,43 +68,6 @@ A statement is a local declaration, an expression followed by `;` (in practice a
 
 An assignment writes to a variable, a field or an array item. The compound forms apply the operator first, so `x += 1` is `x = x + 1`. Assignment is a statement, so `a = b = c` is an error.
 
-```yacc
-block: '{' stmt_list_opt '}'
-     ;
-
-stmt_list_opt: %empty
-             | stmt_list
-             ;
-
-stmt_list: stmt
-         | stmt_list stmt
-         ;
-
-stmt: var_decl
-    | expr ';'
-    | assign ';'
-    | RETURN ';'
-    | RETURN expr ';'
-    | BREAK ';'
-    | CONTINUE ';'
-    | block
-    | if_stmt
-    | while_stmt
-    | for_stmt
-    ;
-
-assign: expr assign_op expr
-      ;
-
-assign_op: '='
-         | ADD_ASSIGN
-         | SUB_ASSIGN
-         | MUL_ASSIGN
-         | DIV_ASSIGN
-         | MOD_ASSIGN
-         ;
-```
-
 ## While
 
 A while loop is used to repeatedly execute a block until some condition is no longer true. Use `break` to exit a while loop early. A while loop supports a continue expression after the condition, which runs each time the loop continues, and `continue` runs it too before the condition is tested again. The continue expression is an assignment.
