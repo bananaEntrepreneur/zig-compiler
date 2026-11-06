@@ -1,4 +1,4 @@
-%token CONST VAR PUB ID PRIMITIVE_TYPE
+%token CONST VAR FN PUB ID PRIMITIVE_TYPE BUILTIN
 %token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT ENUM
 %token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
 
@@ -75,6 +75,9 @@ expr: container_type
 
     | '.' init_body
     | expr init_body
+
+    | expr '(' arg_list_opt ')'
+    | BUILTIN '(' arg_list_opt ')'
     ;
 
 container_type: STRUCT '{' members '}'
@@ -115,3 +118,25 @@ init_list: init_item
 init_item: expr
          | '.' ID '=' expr
          ;
+
+fn_decl: FN ID '(' param_list_opt ')' type block
+       ;
+
+param_list_opt: %empty
+              | param_list
+              ;
+
+param_list: param
+          | param_list ',' param
+          ;
+
+param: ID ':' type
+     ;
+
+arg_list_opt: %empty
+            | arg_list
+            ;
+
+arg_list: expr
+        | arg_list ',' expr
+        ;

@@ -60,34 +60,6 @@ A function is declared with `fn`, a name, a parameter list in parentheses, a ret
 
 A call is an expression followed by arguments in parentheses. A builtin call is the same with a name that starts with `@`. The parser takes any such name, and the semantic stage decides which builtins exist. `@import("std")` is the one the smallest program needs.
 
-```yacc
-fn_decl: FN ID '(' param_list_opt ')' type block
-       ;
-
-param_list_opt: %empty
-              | param_list
-              ;
-
-param_list: param
-          | param_list ',' param
-          ;
-
-param: ID ':' type
-     ;
-
-expr: expr '(' arg_list_opt ')'
-    | BUILTIN '(' arg_list_opt ')'
-    ;
-
-arg_list_opt: %empty
-            | arg_list
-            ;
-
-arg_list: expr
-        | arg_list ',' expr
-        ;
-```
-
 ## Block
 
 Blocks are used to limit the scope of variable declarations. A block is a list of statements between `{` and `}`, and a name declared inside it is not visible outside. In Zig a block is also an expression, but here it is only a statement. Treating it as an expression makes `{ ... } -x;` ambiguous, because it reads both as two statements and as one subtraction.
