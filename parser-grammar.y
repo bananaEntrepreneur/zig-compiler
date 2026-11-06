@@ -80,6 +80,8 @@ expr: container_type
 
     | expr '(' arg_list_opt ')'
     | BUILTIN '(' arg_list_opt ')'
+
+    | IF '(' expr ')' expr ELSE expr
     ;
 
 container_type: STRUCT '{' members '}'
@@ -188,3 +190,8 @@ for_stmt: FOR '(' for_input ')' '|' ID '|' block
 for_input: expr
          | expr DOT_DOT expr
          ;
+
+if_stmt: IF '(' expr ')' block
+       | IF '(' expr ')' block ELSE block
+       | IF '(' expr ')' block ELSE if_stmt
+       ;

@@ -82,20 +82,6 @@ An `if` runs its first block when the condition is true and the block after `els
 
 As an expression, `if` picks one of two values and needs the `else` part. Zig has no `?:` operator, and this form takes its place.
 
-```yacc
-if_stmt: IF '(' expr ')' block
-       | IF '(' expr ')' block ELSE block
-       | IF '(' expr ')' block ELSE if_stmt
-       ;
-
-expr: IF '(' expr ')' expr ELSE expr
-    ;
-```
-
-```zig
-const result = if (a != b) 47 else 3089;
-```
-
 ## Example
 
 This program uses every construct above.
