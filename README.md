@@ -72,20 +72,6 @@ An assignment writes to a variable, a field or an array item. The compound forms
 
 A while loop is used to repeatedly execute a block until some condition is no longer true. Use `break` to exit a while loop early. A while loop supports a continue expression after the condition, which runs each time the loop continues, and `continue` runs it too before the condition is tested again. The continue expression is an assignment.
 
-```yacc
-while_stmt: WHILE '(' expr ')' block
-          | WHILE '(' expr ')' ':' '(' assign ')' block
-          ;
-```
-
-```zig
-while (i < 10) : (i += 1) {
-    if (i == 5) {
-        continue;
-    }
-}
-```
-
 ## For
 
 A for loop goes over the items of an array and names each one between `|` and `|`. A range `a..b` goes over the integers from `a` up to but not including `b`. The name has to be there, and `_` can stand in when the item is not used.

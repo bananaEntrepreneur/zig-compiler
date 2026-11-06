@@ -176,3 +176,7 @@ assign_op: '='
          | DIV_ASSIGN
          | MOD_ASSIGN
          ;
+
+while_stmt: WHILE '(' expr ')' block
+          | WHILE '(' expr ')' ':' '(' assign ')' block
+          ;
