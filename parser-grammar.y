@@ -1,7 +1,8 @@
 %token CONST VAR FN PUB ID PRIMITIVE_TYPE BUILTIN
-%token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT ENUM
+%token IF ELSE WHILE FOR CONTINUE BREAK RETURN STRUCT ENUM
 %token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
+%token DOT_DOT
 
 %nonassoc ELSE
 %left OR
@@ -180,3 +181,10 @@ assign_op: '='
 while_stmt: WHILE '(' expr ')' block
           | WHILE '(' expr ')' ':' '(' assign ')' block
           ;
+
+for_stmt: FOR '(' for_input ')' '|' ID '|' block
+        ;
+
+for_input: expr
+         | expr DOT_DOT expr
+         ;

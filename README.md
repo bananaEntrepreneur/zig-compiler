@@ -76,25 +76,6 @@ A while loop is used to repeatedly execute a block until some condition is no lo
 
 A for loop goes over the items of an array and names each one between `|` and `|`. A range `a..b` goes over the integers from `a` up to but not including `b`. The name has to be there, and `_` can stand in when the item is not used.
 
-```yacc
-for_stmt: FOR '(' for_input ')' '|' ID '|' block
-        ;
-
-for_input: expr
-         | expr DOT_DOT expr
-         ;
-```
-
-```zig
-for (items) |v| {
-    sum += v;
-}
-
-for (0..10) |k| {
-    buf[k] = 'a';
-}
-```
-
 ## If
 
 An `if` runs its first block when the condition is true and the block after `else` otherwise. `else if` chains another test. Braces are required around every block.
