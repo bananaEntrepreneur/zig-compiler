@@ -4,15 +4,7 @@ Reference for the subset of Zig.
 
 ## Notation
 
-Lowercase names are nonterminals, uppercase names are tokens, and a quoted character is a token of its own. Lists are left recursive, and a name ending in `_opt` may be empty. The `expr` rule is split across sections, and each section holds the alternatives for its own construct.
-
-```yacc
-%token CONST VAR FN PUB IF ELSE WHILE FOR BREAK CONTINUE RETURN STRUCT ENUM
-%token AND OR TRUE FALSE UNDEFINED
-%token ID INT FLOAT CHAR STRING PRIMITIVE_TYPE BUILTIN
-%token EQUAL NOT_EQUAL LESS_EQUAL GREAT_EQUAL DOT_DOT
-%token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
-```
+The grammar is in [parser-grammar.y](parser-grammar.y). Lowercase names there are nonterminals, uppercase names are tokens, and a quoted character is a token of its own. Lists are left recursive, and a name ending in `_opt` may be empty.
 
 `AND` and `OR` are the words `and` and `or`. `ID` is an identifier, and `BUILTIN` is `@` followed by a name. `INT`, `FLOAT`, `CHAR` and `STRING` are literals. `EQUAL`, `NOT_EQUAL`, `LESS_EQUAL` and `GREAT_EQUAL` are `==`, `!=`, `<=` and `>=`. `DOT_DOT` is `..`, and the `*_ASSIGN` tokens are `+=`, `-=`, `*=`, `/=` and `%=`.
 
@@ -38,7 +30,7 @@ One `members` rule serves both containers. The parser takes a typed or an untype
 
 The precedence follows the table in the language reference, tightest first: member access, call and index; prefix `-` and `!`; `*` `/` `%`; `+` `-`; comparisons; `and`; `or`. Binary operators group to the left. Comparisons do not chain, so `a < b < c` is an error. Zig spells the logical operators as words, `and` and `or`, and negation as `!`. Both words skip the right operand when the left one decides the result. Assignment is the loosest operator in the table, but Zig treats it as a statement, so it is described under Block.
 
-`ELSE` is in the list for the `if` expression, which takes everything to its right: `if (c) a else b + 1` is `if (c) a else (b + 1)`. `{` is there so that `a + P{ .x = 1 }` attaches the literal to `P`.
+`ELSE` is in the precedence list for the `if` expression, which takes everything to its right: `if (c) a else b + 1` is `if (c) a else (b + 1)`. `{` is there so that `a + P{ .x = 1 }` attaches the literal to `P`.
 
 An operand is a name, a literal, or an expression in parentheses.
 
@@ -81,62 +73,3 @@ A for loop goes over the items of an array and names each one between `|` and `|
 An `if` runs its first block when the condition is true and the block after `else` otherwise. `else if` chains another test. Braces are required around every block.
 
 As an expression, `if` picks one of two values and needs the `else` part. Zig has no `?:` operator, and this form takes its place.
-
-## Example
-
-This program uses every construct above.
-
-```zig
-const std = @import("std");
-
-const Point = struct {
-    x: f32,
-    y: f32,
-
-    pub fn dot(self: Point, other: Point) f32 {
-        return self.x * other.x + self.y * other.y;
-    }
-};
-
-const Color = enum(u2) {
-    red,
-    green,
-    blue,
-};
-
-fn sign(n: i32) i32 {
-    if (n < 0) {
-        return -1;
-    } else if (n == 0) {
-        return 0;
-    }
-    return 1;
-}
-
-pub fn main() void {
-    const items = [_]i32{ 1, 2, 3 };
-    const p = Point{ .x = 1.5, .y = 2.0 };
-    const color: Color = .green;
-    var buf: [10]u8 = undefined;
-    var sum: i32 = 0;
-    var i: i32 = 0;
-
-    while (i < 10) : (i += 1) {
-        if (i == 5) {
-            continue;
-        }
-        sum += sign(i - 5);
-    }
-
-    for (items) |v| {
-        sum += v;
-    }
-
-    for (0..10) |k| {
-        buf[k] = 'a';
-    }
-
-    const big = if (sum > 5 and !(i == 0)) 47 else 3089;
-    std.debug.print("{} {} {}\n", .{ sum, p.dot(p), big });
-}
-```
