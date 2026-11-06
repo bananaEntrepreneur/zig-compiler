@@ -40,50 +40,7 @@ The precedence follows the table in the language reference, tightest first: memb
 
 `ELSE` is in the list for the `if` expression, which takes everything to its right: `if (c) a else b + 1` is `if (c) a else (b + 1)`. `{` is there so that `a + P{ .x = 1 }` attaches the literal to `P`.
 
-```yacc
-%nonassoc ELSE
-%left OR
-%left AND
-%nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
-%left '+' '-'
-%left '*' '/' '%'
-%right UMINUS NOT
-%left '(' '[' '.' '{'
-```
-
-```yacc
-expr: expr OR expr
-    | expr AND expr
-    | expr EQUAL expr
-    | expr NOT_EQUAL expr
-    | expr '<' expr
-    | expr '>' expr
-    | expr LESS_EQUAL expr
-    | expr GREAT_EQUAL expr
-    | expr '+' expr
-    | expr '-' expr
-    | expr '*' expr
-    | expr '/' expr
-    | expr '%' expr
-    | '-' expr %prec UMINUS
-    | '!' expr %prec NOT
-    ;
-```
-
 An operand is a name, a literal, or an expression in parentheses.
-
-```yacc
-expr: '(' expr ')'
-    | ID
-    | INT
-    | FLOAT
-    | CHAR
-    | STRING
-    | TRUE
-    | FALSE
-    | UNDEFINED
-    ;
-```
 
 ## Array
 

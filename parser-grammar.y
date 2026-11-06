@@ -1,15 +1,15 @@
 %token CONST VAR PUB ID PRIMITIVE_TYPE
 %token IF ELSE WHILE CONTINUE BREAK RETURN STRUCT ENUM UNION
+%token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
 
-%right '='
+%nonassoc ELSE
 %left OR
 %left AND
-%left '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
+%nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
 %left '+' '-'
 %left '*' '/' '%'
 %right UMINUS NOT
-%left '[' '.'
-%nonassoc '('
+%left '.' '(' '[' '{'
 
 %%
 
@@ -43,6 +43,32 @@ type: PRIMITIVE_TYPE
 expr: container_type
     | expr '.' ID
     | '.' ID
+
+    | expr OR expr
+    | expr AND expr
+    | expr EQUAL expr
+    | expr NOT_EQUAL expr
+    | expr '<' expr
+    | expr '>' expr
+    | expr LESS_EQUAL expr
+    | expr GREAT_EQUAL expr
+    | expr '+' expr
+    | expr '-' expr
+    | expr '*' expr
+    | expr '/' expr
+    | expr '%' expr
+    | '-' expr %prec UMINUS
+    | '!' expr %prec NOT
+
+    | '(' expr ')'
+    | ID
+    | INT
+    | FLOAT
+    | CHAR
+    | STRING
+    | TRUE
+    | FALSE
+    | UNDEFINED
     ;
 
 container_type: STRUCT '{' members '}'
