@@ -3,8 +3,10 @@
 %token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %token DOT_DOT
+%token ERROR CATCH
 
 %nonassoc ELSE
+%right CATCH
 %left OR
 %left AND
 %nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
@@ -40,6 +42,8 @@ type: PRIMITIVE_TYPE
     | ID
     | array_type
     | container_type
+    | error_set_type
+    | error_union_type
     ;
 
 expr: container_type
@@ -82,6 +86,9 @@ expr: container_type
     | BUILTIN '(' arg_list_opt ')'
 
     | IF '(' expr ')' expr ELSE expr
+
+    | expr CATCH expr
+    | expr CATCH '|' ID '|' expr %prec CATCH
     ;
 
 container_type: STRUCT '{' members '}'
@@ -104,6 +111,24 @@ field: ID ':' type ','
      | ID ','
      ;
 
+error_set_type: ERROR '{' error_field_list_opt '}'
+              ;
+
+error_field_list_opt: %empty
+                    | error_field_list
+                    | error_field_list ','
+                    ;
+
+error_field_list: ID
+                | error_field_list ',' ID
+                ;
+
+error_union_type: error_set_type '!' type
+                | ID '!' type
+                | ID '!' '?' type
+                | error_set_type '!' '?' type
+                ;
+
 array_type: '[' expr ']' type
           ;
 
@@ -124,6 +149,7 @@ init_item: expr
          ;
 
 fn_decl: FN ID '(' param_list_opt ')' type block
+       | FN ID '(' param_list_opt ')' '!' type block
        ;
 
 param_list_opt: %empty
