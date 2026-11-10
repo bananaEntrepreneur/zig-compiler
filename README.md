@@ -2,12 +2,6 @@
 
 Reference for the subset of Zig. It's based on official Zig reference, but implement it's own logic. [parser-grammar.y](parser-grammar.y) contain only this grammar.
 
-## Notation
-
-The grammar is in [parser-grammar.y](parser-grammar.y). Lowercase names there are nonterminals, uppercase names are tokens, and a quoted character is a token of its own. Lists are left recursive, and a name ending in `_opt` may be empty.
-
-`AND` and `OR` are the words `and` and `or`. `ID` is an identifier, and `BUILTIN` is `@` followed by a name. `INT`, `FLOAT`, `CHAR` and `STRING` are literals. `EQUAL`, `NOT_EQUAL`, `LESS_EQUAL` and `GREAT_EQUAL` are `==`, `!=`, `<=` and `>=`. `DOT_DOT` is `..`, and the `*_ASSIGN` tokens are `+=`, `-=`, `*=`, `/=` and `%=`.
-
 ## Declaration
 
 A source file is a list of declarations. `const` binds a name to a value that cannot change, `var` declares a variable that can, and `fn` declares a function. A variable must be initialized, and `undefined` stands for "no value yet". The type after the name may be left out when the value fixes it. `pub` makes a declaration visible to other files, and the entry point `main` has to be `pub`. A top-level declaration can be used above the line that declares it. **File is implicit struct.**
