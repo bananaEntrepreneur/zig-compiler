@@ -85,3 +85,15 @@ An error union cannot be used as a `T` until it is unwrapped. `try x` gives the 
 The handler is an expression. `return` and a block are statements here, so `catch return` and `catch |e| { ... }` are not supported. `try` passes an error on, and a call in the handler deals with it.
 
 Zig also names a set of errors, as in `error{ A, B }!T`. That is not supported. The semantic stage checks that the operand of `try` and `catch` is an error union and that the handler has the type `T`.
+
+## Not implemented
+
+Control flow: `switch`, `defer` and `errdefer`, `else` after a loop, and captures on `if` and `while`, as in `if (x) |v|`. Labeled blocks and loops, with `break :label` and `continue :label`, will not be implemented. A block, `return`, `break` and `continue` are statements, so `const x = { ... };` and `catch return` do not parse.
+
+Types: pointers, slices, optionals (`?T`), unions, function types and `anytype`. The only type built from another type is the array `[N]T`.
+
+Errors: a named set of errors (`error{ A, B }` and `E!T`), `orelse`, `unreachable`, and a block as a `catch` handler. `!T` is allowed only as a return type.
+
+Operators: bitwise operators and shifts, and the array operators `++` and `**`.
+
+Declarations: `comptime` and generics, `test` blocks, `extern`, `export` and `inline`.
