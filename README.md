@@ -28,7 +28,7 @@ One `members` rule serves both containers. The parser takes a typed or an untype
 
 ## Operator
 
-The precedence follows the table in the language reference, tightest first: member access, call and index; prefix `-` and `!`; `*` `/` `%`; `+` `-`; comparisons; `and`; `or`. Binary operators group to the left. Comparisons do not chain, so `a < b < c` is an error. Zig spells the logical operators as words, `and` and `or`, and negation as `!`. Both words skip the right operand when the left one decides the result. Assignment is the loosest operator in the table, but Zig treats it as a statement, so it is described under Block.
+The precedence follows the table in the language reference, tightest first: member access, call and index; prefix `-`, `!` and `try`; `*` `/` `%`; `+` `-`; `catch`; comparisons; `and`; `or`. Binary operators group to the left. Comparisons do not chain, so `a < b < c` is an error. Zig spells the logical operators as words, `and` and `or`, and negation as `!`. Both words skip the right operand when the left one decides the result. Assignment is the loosest operator in the table, but Zig treats it as a statement, so it is described under Block.
 
 `ELSE` is in the precedence list for the `if` expression, which takes everything to its right: `if (c) a else b + 1` is `if (c) a else (b + 1)`. `{` is there so that `a + P{ .x = 1 }` attaches the literal to `P`.
 
@@ -73,3 +73,15 @@ A for loop goes over the items of an array and names each one between `|` and `|
 An `if` runs its first block when the condition is true and the block after `else` otherwise. `else if` chains another test. Braces are required around every block.
 
 As an expression, `if` picks one of two values and needs the `else` part.
+
+## Error
+
+A function that can fail declares its return type as `!T`, which means a value of type `T` or an error. This is an error union. The `!` goes in front of the return type and nowhere else, and `!void` is a function that returns no value but can still fail.
+
+`error.Name` is an error value. The name needs no declaration, and `return error.DivByZero;` makes the function fail. All errors form one set, so the type does not list which ones a function may return.
+
+An error union cannot be used as a `T` until it is unwrapped. `try x` gives the value of `x`, or returns the error from the current function when `x` failed, so it belongs in a function whose own return type is `!T`. `x catch d` gives the value of `x` or, on an error, the value of `d`. `x catch |e| h(e)` does the same and names the error `e` inside the handler.
+
+The handler is an expression. `return` and a block are statements here, so `catch return` and `catch |e| { ... }` are not supported. `try` passes an error on, and a call in the handler deals with it.
+
+Zig also names a set of errors, as in `error{ A, B }!T`. That is not supported. The semantic stage checks that the operand of `try` and `catch` is an error union and that the handler has the type `T`.

@@ -3,16 +3,16 @@
 %token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %token DOT_DOT
-%token ERROR CATCH
+%token ERROR TRY CATCH
 
 %nonassoc ELSE
-%right CATCH
 %left OR
 %left AND
 %nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
+%left CATCH
 %left '+' '-'
 %left '*' '/' '%'
-%right UMINUS NOT
+%right UMINUS NOT TRY
 %left '.' '(' '[' '{'
 
 %%
@@ -42,13 +42,12 @@ type: PRIMITIVE_TYPE
     | ID
     | array_type
     | container_type
-    | error_set_type
-    | error_union_type
     ;
 
 expr: container_type
     | expr '.' ID
     | '.' ID
+    | ERROR '.' ID
 
     | expr OR expr
     | expr AND expr
@@ -65,6 +64,7 @@ expr: container_type
     | expr '%' expr
     | '-' expr %prec UMINUS
     | '!' expr %prec NOT
+    | TRY expr
 
     | '(' expr ')'
     | ID
@@ -110,24 +110,6 @@ field_list: field
 field: ID ':' type ','
      | ID ','
      ;
-
-error_set_type: ERROR '{' error_field_list_opt '}'
-              ;
-
-error_field_list_opt: %empty
-                    | error_field_list
-                    | error_field_list ','
-                    ;
-
-error_field_list: ID
-                | error_field_list ',' ID
-                ;
-
-error_union_type: error_set_type '!' type
-                | ID '!' type
-                | ID '!' '?' type
-                | error_set_type '!' '?' type
-                ;
 
 array_type: '[' expr ']' type
           ;
