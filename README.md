@@ -8,7 +8,7 @@ A source file is a list of declarations. `const` binds a name to a value that ca
 
 ## Primitive type
 
-Integers, floats, `bool` and `void`. The integers are `i8`, `i16`, `i32`, `i64`, and `u8`, `u16`, `u32`, `u64`. The floats are `f32` and `f64`. Zig allows an integer of any width up to 65535 bits. Signed integer can't have bit width 0.
+Integers, floats, `bool` and `void`. `void` is allowed only as a function's return type. The integers are `i8`, `i16`, `i32`, `i64`, and `u8`, `u16`, `u32`, `u64`. The floats are `f32` and `f64`. Zig allows an integer of any width up to 65535 bits. Signed integer can't have bit width 0.
 
 ## User-defined type
 
