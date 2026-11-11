@@ -177,16 +177,13 @@ stmt: var_decl ';'
     | for_stmt
     ;
 
-assign: expr assign_op expr
+assign: expr '=' expr
+      | expr ADD_ASSIGN expr
+      | expr SUB_ASSIGN expr
+      | expr MUL_ASSIGN expr
+      | expr DIV_ASSIGN expr
+      | expr MOD_ASSIGN expr
       ;
-
-assign_op: '='
-         | ADD_ASSIGN
-         | SUB_ASSIGN
-         | MUL_ASSIGN
-         | DIV_ASSIGN
-         | MOD_ASSIGN
-         ;
 
 while_stmt: WHILE '(' expr ')' block
           | WHILE '(' expr ')' ':' '(' assign ')' block
