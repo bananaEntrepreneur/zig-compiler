@@ -24,7 +24,7 @@ decl_list: %empty
          | decl_list decl
          ;
         
-decl: pub_opt var_decl
+decl: pub_opt var_decl ';'
     | pub_opt fn_decl
     ;
 
@@ -32,10 +32,10 @@ pub_opt: %empty
        | PUB
        ;
 
-var_decl: CONST ID '=' expr ';'
-        | CONST ID ':' type '=' expr ';'
-        | VAR ID '=' expr ';'
-        | VAR ID ':' type '=' expr ';'
+var_decl: CONST ID '=' expr
+        | CONST ID ':' type '=' expr
+        | VAR ID '=' expr
+        | VAR ID ':' type '=' expr
         ;
 
 type: PRIMITIVE_TYPE
@@ -164,7 +164,7 @@ stmt_list: stmt
          | stmt_list stmt
          ;
 
-stmt: var_decl
+stmt: var_decl ';'
     | expr ';'
     | assign ';'
     | RETURN ';'
