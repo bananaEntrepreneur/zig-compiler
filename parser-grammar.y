@@ -1,6 +1,6 @@
 %token CONST VAR FN PUB ID PRIMITIVE_TYPE BUILTIN
 %token IF ELSE WHILE FOR CONTINUE BREAK RETURN STRUCT ENUM
-%token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED
+%token INT FLOAT CHAR STRING TRUE FALSE UNDEFINED VOID
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %token DOT_DOT
 %token ERROR TRY CATCH
@@ -132,6 +132,8 @@ init_item: expr
 
 fn_decl: FN ID '(' param_list_opt ')' type block
        | FN ID '(' param_list_opt ')' '!' type block
+       | FN ID '(' param_list_opt ')' VOID block
+       | FN ID '(' param_list_opt ')' '!' VOID block
        ;
 
 param_list_opt: %empty
