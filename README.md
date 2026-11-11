@@ -16,9 +16,9 @@ In other words, a container: struct and enum. A container is a value, so it is d
 
 A struct lists fields with their types. A function declared inside the struct is a method, and `value.method(args)` calls it with the value as the first argument. 
 
-An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
+An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. A name can take a value, as in `b = 5`, and the semantic stage then requires the tag type. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
 
-One `members` rule serves both containers. The parser takes a typed or an untyped field anywhere, and the semantic stage checks that the field fits its container. Fields and declarations may come in any order, and every field ends with a comma.
+One `members` rule serves both containers. A field is a name, a name with a type, or a name with a value. The parser takes any of them in either container, and the semantic stage checks that the field fits. Fields and declarations may come in any order. A comma ends every field except the last member, so `enum { red, green }` is valid.
 
 ## Operator
 

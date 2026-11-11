@@ -95,13 +95,18 @@ container_type: STRUCT '{' members '}'
               | ENUM '(' type ')' '{' members '}'
               ;
 
-members: %empty
-       | members field
-       | members decl
+members: member_list
+       | member_list field
        ;
 
-field: ID ':' type ','
-     | ID ','
+member_list: %empty
+           | member_list field ','
+           | member_list decl
+           ;
+
+field: ID
+     | ID ':' type
+     | ID '=' expr
      ;
 
 array_type: '[' expr ']' type
