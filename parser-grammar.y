@@ -47,7 +47,7 @@ type: PRIMITIVE_TYPE
 expr: container_type
     | expr '.' ID
     | '.' ID
-    | ERROR '.' ID
+    | ERROR
 
     | expr OR expr
     | expr AND expr

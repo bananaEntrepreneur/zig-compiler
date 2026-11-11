@@ -74,6 +74,8 @@ A function that can fail declares its return type as `!T`, which means a value o
 
 `error.Name` is an error value. The name needs no declaration, and `return error.DivByZero;` makes the function fail. All errors form one set, so the type does not list which ones a function may return.
 
+The parser reads `error` as an ordinary operand, so `error.Name` is a member access. The semantic stage accepts `error` only with a name right after it, as in `error.Name`, and rejects `error` alone and longer chains such as `error.A.B`.
+
 An error union cannot be used as a `T` until it is unwrapped. `try x` gives the value of `x`, or returns the error from the current function when `x` failed, so it belongs in a function whose own return type is `!T`. `x catch d` gives the value of `x` or, on an error, the value of `d`. `x catch |e| h(e)` does the same and names the error `e` inside the handler.
 
 The handler is an expression. `return` and a block are statements here, so `catch return` and `catch |e| { ... }` are not supported. `try` passes an error on, and a call in the handler deals with it.
