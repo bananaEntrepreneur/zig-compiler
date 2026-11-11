@@ -18,7 +18,7 @@ A struct lists fields with their types. A function declared inside the struct is
 
 An enum lists names, and an integer tag type may follow the keyword: `enum(u2)`. An enum value is written as `Color.green`, or as `.green` when the context gives its type.
 
-One `members` rule serves both containers. The parser takes a typed or an untyped field anywhere, and the semantic stage checks that the field fits its container. Fields come first, then declarations, and every field ends with a comma.
+One `members` rule serves both containers. The parser takes a typed or an untyped field anywhere, and the semantic stage checks that the field fits its container. Fields and declarations may come in any order, and every field ends with a comma.
 
 ## Operator
 
