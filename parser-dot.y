@@ -2,6 +2,11 @@
 %code requires {
     #include "ast/DeclNode.h"
     #include "ast/TypeNode.h"
+    #include "ast/ProgramNode.h"
+}
+
+%code {
+    ProgramNode* programRoot = nullptr;
 }
 
 %union {
@@ -9,8 +14,10 @@
     std::string*        StrVal;
     DeclNode*           Decl;
     TypeNode*           Type;
+    ProgramNode*        Program;
 }
 
+%type <Program> program
 %type <Decl> decl_list decl var_decl fn_decl param_list_opt param_list param members member_list field
 %type <BoolVal> pub_opt
 %type <Type>    type array_type container_type
@@ -18,7 +25,7 @@
 %token<StrVal> ID
 %token<StrVal> PRIMITIVE_TYPE
 
-%token CONST VAR FN PUB PRIMITIVE_TYPE BUILTIN
+%token CONST VAR FN PUB BUILTIN
 %token IF ELSE WHILE FOR CONTINUE BREAK RETURN STRUCT ENUM
 %token INT FLOAT CHAR STRING BOOL UNDEFINED VOID
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
@@ -37,7 +44,7 @@
 
 %%
 
-program: decl_list
+program: decl_list  { programRoot = ProgramNode::Create("main", $1); $$ = programRoot; }
        ;
 
 decl_list: %empty           { $$ = DeclNode::CreateEmptyDeclList(); }
