@@ -1,18 +1,22 @@
 
 %code requires {
     #include "ast/DeclNode.h"
+    #include "ast/TypeNode.h"
 }
 
 %union {
     bool                BoolVal;
     std::string*        StrVal;
     DeclNode*           Decl;
+    TypeNode*           Type;
 }
 
 %type <Decl> decl_list decl var_decl fn_decl param_list_opt param_list param members member_list field
 %type <BoolVal> pub_opt
+%type <Type>    type array_type container_type
 
 %token<StrVal> ID
+%token<StrVal> PRIMITIVE_TYPE
 
 %token CONST VAR FN PUB PRIMITIVE_TYPE BUILTIN
 %token IF ELSE WHILE FOR CONTINUE BREAK RETURN STRUCT ENUM
@@ -54,10 +58,10 @@ var_decl: CONST ID '=' expr             { $$ = DeclNode::CreateConstDecl(*$2, nu
         | VAR ID ':' type '=' expr      { $$ = DeclNode::CreateVarDecl(*$2, $4, $6); }
         ;
 
-type: PRIMITIVE_TYPE
-    | ID
-    | array_type
-    | container_type
+type: PRIMITIVE_TYPE    { $$ = TypeNode::CreatePrimitiveType(*$1); }
+    | ID                { $$ = TypeNode::CreateNameType(*$1); }
+    | array_type        { $$ = $1; }
+    | container_type    { $$ = $1; }
     ;
 
 expr: container_type
@@ -106,9 +110,9 @@ expr: container_type
     | expr CATCH '|' ID '|' expr %prec CATCH
     ;
 
-container_type: STRUCT '{' members '}'
-              | ENUM '{' members '}'
-              | ENUM '(' type ')' '{' members '}'
+container_type: STRUCT '{' members '}'              { $$ = TypeNode::CreateStructType($3); }
+              | ENUM '{' members '}'                { $$ = TypeNode::CreateEnumType(nullptr, $3); }
+              | ENUM '(' type ')' '{' members '}'   { $$ = TypeNode::CreateEnumType($3, $6); }
               ;
 
 members: member_list        { $$ = DeclNode::CreateMembers($1); }
@@ -125,7 +129,7 @@ field: ID           { $$ = DeclNode::CreateField(*$1, nullptr, nullptr); }
      | ID '=' expr  { $$ = DeclNode::CreateField(*$1, nullptr, $3); }
      ;
 
-array_type: '[' expr ']' type
+array_type: '[' expr ']' type   { $$ = TypeNode::CreateArrayType($2, $4); }
           ;
 
 init_body: '{' init_list_opt '}'
