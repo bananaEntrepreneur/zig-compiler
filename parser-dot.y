@@ -1,8 +1,24 @@
-%token CONST VAR FN PUB ID PRIMITIVE_TYPE BUILTIN
+
+%code requires {
+    #include "ast/DeclNode.h"
+}
+
+%union {
+    bool                BoolVal;
+    std::string*        StrVal;
+    DeclNode*           Decl;
+}
+
+%type <Decl> decl_list decl var_decl fn_decl param_list_opt param_list param members member_list field
+%type <BoolVal> pub_opt
+
+%token<StrVal> ID
+
+%token CONST VAR FN PUB PRIMITIVE_TYPE BUILTIN
 %token IF ELSE WHILE FOR CONTINUE BREAK RETURN STRUCT ENUM
 %token INT FLOAT CHAR STRING BOOL UNDEFINED VOID
 %token ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
-%token DOT_DOT1
+%token DOT_DOT
 %token ERROR TRY CATCH
 
 %nonassoc ELSE
@@ -20,22 +36,22 @@
 program: decl_list
        ;
 
-decl_list: %empty
-         | decl_list decl
+decl_list: %empty           { $$ = DeclNode::CreateEmptyDeclList(); }
+         | decl_list decl   { $$ = DeclNode::AddToDeclList($1, $2); }
          ;
         
-decl: pub_opt var_decl ';'
-    | pub_opt fn_decl
+decl: pub_opt var_decl ';'  { $2->setPublic($1); $$ = $2; }
+    | pub_opt fn_decl       { $2->setPublic($1); $$ = $2; }
     ;
 
-pub_opt: %empty
-       | PUB
+pub_opt: %empty { $$ = false; }
+       | PUB    { $$ = true; }
        ;
 
-var_decl: CONST ID '=' expr
-        | CONST ID ':' type '=' expr
-        | VAR ID '=' expr
-        | VAR ID ':' type '=' expr
+var_decl: CONST ID '=' expr             { $$ = DeclNode::CreateConstDecl(*$2, nullptr, $4); }
+        | CONST ID ':' type '=' expr    { $$ = DeclNode::CreateConstDecl(*$2, $4, $6); }
+        | VAR ID '=' expr               { $$ = DeclNode::CreateVarDecl(*$2, nullptr, $4); }
+        | VAR ID ':' type '=' expr      { $$ = DeclNode::CreateVarDecl(*$2, $4, $6); }
         ;
 
 type: PRIMITIVE_TYPE
@@ -95,18 +111,18 @@ container_type: STRUCT '{' members '}'
               | ENUM '(' type ')' '{' members '}'
               ;
 
-members: member_list
-       | member_list field
+members: member_list        { $$ = DeclNode::CreateMembers($1); }
+       | member_list field  { $$ = DeclNode::AddFieldToMembers(DeclNode::CreateMembers($1), $2); }
        ;
 
-member_list: %empty
-           | member_list field ','
-           | member_list decl
+member_list: %empty                 { $$ = DeclNode::CreateEmptyDeclList(); }
+           | member_list field ','  { $$ = DeclNode::AddToMemberList($1, $2); }
+           | member_list decl       { $$ = DeclNode::AddToMemberList($1, $2); }
            ;
 
-field: ID
-     | ID ':' type
-     | ID '=' expr
+field: ID           { $$ = DeclNode::CreateField(*$1, nullptr, nullptr); }
+     | ID ':' type  { $$ = DeclNode::CreateField(*$1, $3, nullptr); }
+     | ID '=' expr  { $$ = DeclNode::CreateField(*$1, nullptr, $3); }
      ;
 
 array_type: '[' expr ']' type
@@ -128,21 +144,21 @@ init_item: expr
          | '.' ID '=' expr
          ;
 
-fn_decl: FN ID '(' param_list_opt ')' type block
-       | FN ID '(' param_list_opt ')' '!' type block
-       | FN ID '(' param_list_opt ')' VOID block
-       | FN ID '(' param_list_opt ')' '!' VOID block
+fn_decl: FN ID '(' param_list_opt ')' type block        { $$ = DeclNode::CreateFnDecl(*$2, $4, $6, false, $7); }
+       | FN ID '(' param_list_opt ')' '!' type block    { $$ = DeclNode::CreateFnDecl(*$2, $4, $7, true,  $8); }
+       | FN ID '(' param_list_opt ')' VOID block        { $$ = DeclNode::CreateFnDecl(*$2, $4, nullptr, false, $7); }
+       | FN ID '(' param_list_opt ')' '!' VOID block    { $$ = DeclNode::CreateFnDecl(*$2, $4, nullptr, true,  $8); }
        ;
 
-param_list_opt: %empty
-              | param_list
+param_list_opt: %empty      { $$ = DeclNode::CreateEmptyParamList(); }
+              | param_list  { $$ = $1; }
               ;
 
-param_list: param
-          | param_list ',' param
+param_list: param                   { $$ = DeclNode::CreateParamList($1); }
+          | param_list ',' param    { $$ = DeclNode::AddToParamList($1, $3); }
           ;
 
-param: ID ':' type
+param: ID ':' type  { $$ = DeclNode::CreateParamDecl(*$1, $3); }
      ;
 
 arg_list_opt: %empty
