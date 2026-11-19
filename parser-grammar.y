@@ -24,13 +24,11 @@ decl_list: %empty
          | decl_list decl
          ;
         
-decl: pub_opt var_decl ';'
-    | pub_opt fn_decl
+decl: var_decl ';'
+    | fn_decl
+    | PUB var_decl ';'
+    | PUB fn_decl
     ;
-
-pub_opt: %empty
-       | PUB
-       ;
 
 var_decl: CONST ID '=' expr
         | CONST ID ':' type '=' expr
