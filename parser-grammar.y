@@ -79,7 +79,8 @@ expr: container_type
     | '.' init_body
     | ID init_body
 
-    | expr '(' arg_list_opt ')'
+    | ID '(' arg_list_opt ')'
+    | expr '.' ID '(' arg_list_opt ')'
     | BUILTIN '(' arg_list_opt ')'
 
     | IF '(' expr ')' expr ELSE expr
