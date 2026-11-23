@@ -77,7 +77,7 @@ expr: container_type
     | array_type init_body
 
     | '.' init_body
-    | expr init_body
+    | ID init_body
 
     | expr '(' arg_list_opt ')'
     | BUILTIN '(' arg_list_opt ')'
