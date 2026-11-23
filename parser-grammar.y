@@ -110,21 +110,19 @@ field: ID
 array_type: '[' expr ']' type
           ;
 
-init_body: '{' init_list_opt '}'
+init_body: '{' '}'
+         | '{' field_init_list '}'
+         | '{' field_init_list ',' '}'
+         | '{' arg_list '}'
+         | '{' arg_list ',' '}'
          ;
 
-init_list_opt: %empty
-             | init_list
-             | init_list ','
-             ;
+field_init_list: field_init
+               | field_init_list ',' field_init
+               ;
 
-init_list: init_item
-         | init_list ',' init_item
-         ;
-
-init_item: expr
-         | '.' ID '=' expr
-         ;
+field_init: '.' ID '=' expr
+          ;
 
 fn_decl: FN ID '(' param_list_opt ')' type block
        | FN ID '(' param_list_opt ')' '!' type block
