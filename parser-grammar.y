@@ -105,6 +105,7 @@ member_list: %empty
 
 field: ID
      | ID ':' type
+     | ID ':' type '=' expr
      | ID '=' expr
      ;
 
