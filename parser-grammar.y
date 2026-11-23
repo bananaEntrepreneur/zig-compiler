@@ -150,14 +150,10 @@ arg_list: expr
         | arg_list ',' expr
         ;
 
-block: '{' stmt_list_opt '}'
+block: '{' stmt_list '}'
      ;
 
-stmt_list_opt: %empty
-             | stmt_list
-             ;
-
-stmt_list: stmt
+stmt_list: %empty
          | stmt_list stmt
          ;
 
