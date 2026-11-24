@@ -42,6 +42,31 @@ type: PRIMITIVE_TYPE
     | container_type
     ;
 
+array_type: '[' expr ']' PRIMITIVE_TYPE
+          | '[' expr ']' ID
+          | '[' expr ']' array_type
+          ;
+
+container_type: STRUCT '{' members '}'
+              | ENUM '{' members '}'
+              | ENUM '(' type ')' '{' members '}'
+              ;
+
+members: member_list
+       | member_list field
+       ;
+
+member_list: %empty
+           | member_list field ','
+           | member_list decl
+           ;
+
+field: ID
+     | ID ':' type
+     | ID ':' type '=' expr
+     | ID '=' expr
+     ;
+
 expr: container_type
     | expr '.' ID
     | '.' ID
@@ -88,29 +113,6 @@ expr: container_type
     | expr CATCH expr
     | expr CATCH '|' ID '|' expr %prec CATCH
     ;
-
-container_type: STRUCT '{' members '}'
-              | ENUM '{' members '}'
-              | ENUM '(' type ')' '{' members '}'
-              ;
-
-members: member_list
-       | member_list field
-       ;
-
-member_list: %empty
-           | member_list field ','
-           | member_list decl
-           ;
-
-field: ID
-     | ID ':' type
-     | ID ':' type '=' expr
-     | ID '=' expr
-     ;
-
-array_type: '[' expr ']' type
-          ;
 
 array_init_body: '{' '}'
          | '{' arg_list '}'
