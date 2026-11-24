@@ -194,6 +194,5 @@ for_input: expr
          ;
 
 if_stmt: IF '(' expr ')' block
-       | IF '(' expr ')' block ELSE block
-       | IF '(' expr ')' block ELSE if_stmt
+       | IF '(' expr ')' block ELSE stmt
        ;
