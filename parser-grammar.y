@@ -66,6 +66,23 @@ field: ID
      | ID ':' type '=' expr
      | ID '=' expr
      ;
+     
+fn_decl: FN ID '(' param_list_opt ')' type block
+       | FN ID '(' param_list_opt ')' '!' type block
+       | FN ID '(' param_list_opt ')' VOID block
+       | FN ID '(' param_list_opt ')' '!' VOID block
+       ;
+
+param_list_opt: %empty
+              | param_list
+              ;
+
+param_list: param
+          | param_list ',' param
+          ;
+
+param: ID ':' type
+     ;
 
 expr: container_type
     | expr '.' ID
@@ -99,10 +116,10 @@ expr: container_type
     | UNDEFINED
 
     | expr '[' expr ']'
-    | array_type array_init_body
+    | array_type positional_init_body
 
-    | '.' anonymous_init_body
-    | ID anonymous_init_body
+    | '.' named_init_body
+    | ID named_init_body
 
     | ID '(' arg_list_opt ')'
     | expr '.' ID '(' arg_list_opt ')'
@@ -114,12 +131,12 @@ expr: container_type
     | expr CATCH '|' ID '|' expr %prec CATCH
     ;
 
-array_init_body: '{' '}'
+positional_init_body: '{' '}'
          | '{' arg_list '}'
          | '{' arg_list ',' '}'
          ;
 
-anonymous_init_body: '{' '}'
+named_init_body: '{' '}'
          | '{' field_init_list '}'
          | '{' field_init_list ',' '}'
          ;
@@ -130,23 +147,6 @@ field_init_list: field_init
 
 field_init: '.' ID '=' expr
           ;
-
-fn_decl: FN ID '(' param_list_opt ')' type block
-       | FN ID '(' param_list_opt ')' '!' type block
-       | FN ID '(' param_list_opt ')' VOID block
-       | FN ID '(' param_list_opt ')' '!' VOID block
-       ;
-
-param_list_opt: %empty
-              | param_list
-              ;
-
-param_list: param
-          | param_list ',' param
-          ;
-
-param: ID ':' type
-     ;
 
 arg_list_opt: %empty
             | arg_list
