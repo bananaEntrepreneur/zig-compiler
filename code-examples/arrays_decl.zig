@@ -129,3 +129,21 @@ pub fn main() void {
         a19, a20, a21, a22, a23,
     };
 }
+
+// Строки из expr, не подходящие под размер массива
+// | ERROR
+// | expr EQUAL expr
+// | expr NOT_EQUAL expr
+// | expr '<' expr
+// | expr '>' expr
+// | expr LESS_EQUAL expr
+// | expr GREAT_EQUAL expr
+// | '!' expr
+// | FLOAT
+// | CHAR
+// | STRING
+// | BOOL
+// | UNDEFINED
+// | array_type array_init_body
+// | '.' anonymous_init_body
+// | ID anonymous_init_body
