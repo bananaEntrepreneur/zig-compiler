@@ -74,10 +74,10 @@ expr: container_type
     | UNDEFINED
 
     | expr '[' expr ']'
-    | array_type init_body
+    | array_type array_init_body
 
-    | '.' init_body
-    | ID init_body
+    | '.' anonymous_init_body
+    | ID anonymous_init_body
 
     | ID '(' arg_list_opt ')'
     | expr '.' ID '(' arg_list_opt ')'
@@ -112,11 +112,14 @@ field: ID
 array_type: '[' expr ']' type
           ;
 
-init_body: '{' '}'
-         | '{' field_init_list '}'
-         | '{' field_init_list ',' '}'
+array_init_body: '{' '}'
          | '{' arg_list '}'
          | '{' arg_list ',' '}'
+         ;
+
+anonymous_init_body: '{' '}'
+         | '{' field_init_list '}'
+         | '{' field_init_list ',' '}'
          ;
 
 field_init_list: field_init
