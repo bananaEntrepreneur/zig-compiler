@@ -53,10 +53,8 @@ fn getErrorSize() error{Failed}!usize {
 }
 
 pub fn main() void {
-    // 1. PRIMITIVE_TYPE
     const a1: [5]i32 = .{ 1, 2, 3, 4, 5 };
 
-    // 2. ID
     const a2: [10]MyType = .{
         .{ .value = 10 },
         .{ .value = 20 },
@@ -70,53 +68,39 @@ pub fn main() void {
         .{ .value = 100 },
     };
 
-    // 3. Вложенные ARRAY_TYPE
     const a3: [2][3][4]u8 = undefined;
 
-    // 4. Арифметическое выражение
     const a8: [2 + 3 * 4]i32 = undefined;
 
-    // 6. Выражение сравнения
     const a11: [if (5 == 5) 10 else 20]i32 = undefined;
 
-    // 7. Доступ к полям через точку
     const config = Config{
         .array = .{ .size = 5 },
     };
     const a12: [config.array.size]i32 = undefined;
 
-    // 8. Вызов функции
     const a13: [getSize(5)]i32 = undefined;
 
-    // 9. Вызов метода
     const object = Object{};
     const a14: [object.getSize()]i32 = undefined;
 
-    // 10. Вызов BUILTIN
     const a15: [@sizeOf(i32)]u8 = undefined;
 
-    // 11. TRY
     const a16: [try getErrorSize()]i32 = undefined;
 
-    // 12. IF - ELSE
     const a17: [if (condition) 10 else 5]i32 = undefined;
 
-    // 13. CATCH с обработчиком ошибки
     const a19: [getErrorSize() catch |err| switch (err) {
         error.Failed => 5,
     }]i32 = undefined;
 
-    // 14. Скобки вокруг выражения
     const a20: [(2 + 3) * 4]i32 = undefined;
 
-    // 15. Индексирование массива
     const source = [_]usize{ 5, 10, 15 };
     const a21: [source[0]]i32 = undefined;
 
-    // 16. Инициализация массива
     const a22 = [3]i32{ 1, 2, 3 };
 
-    // 17. Инициализация вложенного массива
     const a23 = [2][2]i32{
         .{ 1, 2 },
         .{ 3, 4 },
@@ -130,20 +114,3 @@ pub fn main() void {
     };
 }
 
-// Строки из expr, не подходящие под размер массива
-// | ERROR
-// | expr EQUAL expr
-// | expr NOT_EQUAL expr
-// | expr '<' expr
-// | expr '>' expr
-// | expr LESS_EQUAL expr
-// | expr GREAT_EQUAL expr
-// | '!' expr
-// | FLOAT
-// | CHAR
-// | STRING
-// | BOOL
-// | UNDEFINED
-// | array_type array_init_body
-// | '.' anonymous_init_body
-// | ID anonymous_init_body
