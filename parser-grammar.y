@@ -167,15 +167,18 @@ arg_list: expr
         | arg_list ',' expr
         ;
 
-block: '{' stmt_list '}'
+block: '{' block_stmt_list '}'
      ;
 
-stmt_list: %empty
-         | stmt_list stmt
-         ;
+block_stmt_list: %empty
+               | block_stmt_list block_stmt
+               ;
 
-stmt: var_decl ';'
-    | expr ';'
+block_stmt: stmt
+          | var_decl ';'
+          ;
+
+stmt: expr ';'
     | assign ';'
     | RETURN ';'
     | RETURN expr ';'
