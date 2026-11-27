@@ -208,5 +208,6 @@ for_input: expr
          ;
 
 if_stmt: IF '(' expr ')' stmt
-       | IF '(' expr ')' ? ELSE stmt
+       | IF '(' expr ')' block ELSE stmt
+       | IF '(' expr ')' assign ELSE stmt
        ;
