@@ -1,4 +1,3 @@
-
 const std = @import("std");
 
 const size: usize = 10;
@@ -53,6 +52,17 @@ fn getErrorSize() error{Failed}!usize {
 }
 
 pub fn main() void {
+    // ограничить var для контейнеров
+    var MyType2 = struct {
+        value: u8,
+    };
+
+    const b1 = MyType2{ .value = 2 };
+    _ = b1;
+
+    MyType2 = struct {
+        value1: u8,
+    };
     const a1: [5]i32 = .{ 1, 2, 3, 4, 5 };
 
     const a2: [10]MyType = .{
@@ -90,9 +100,11 @@ pub fn main() void {
 
     const a17: [if (condition) 10 else 5]i32 = undefined;
 
-    const a19: [getErrorSize() catch |err| switch (err) {
-        error.Failed => 5,
-    }]i32 = undefined;
+    const a19: [
+        getErrorSize() catch |err| switch (err) {
+            error.Failed => 5,
+        }
+    ]i32 = undefined;
 
     const a20: [(2 + 3) * 4]i32 = undefined;
 
@@ -108,9 +120,21 @@ pub fn main() void {
 
     _ = .{
         SIZE,
-        a1, a2, a3, a8, a11, a12,
-        a13, a14, a15, a16, a17,
-        a19, a20, a21, a22, a23,
+        a1,
+        a2,
+        a3,
+        a8,
+        a11,
+        a12,
+        a13,
+        a14,
+        a15,
+        a16,
+        a17,
+        a19,
+        a20,
+        a21,
+        a22,
+        a23,
     };
 }
-
