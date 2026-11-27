@@ -184,9 +184,9 @@ assign: expr '=' expr
       | expr MOD_ASSIGN expr
       ;
 
-while_stmt: WHILE '(' expr ')' block
-          | WHILE '(' expr ')' ':' '(' assign ')' block
-          | WHILE '(' expr ')' ':' '(' expr ')' block
+while_stmt: WHILE '(' expr ')' stmt
+          | WHILE '(' expr ')' ':' '(' assign ')' stmt
+          | WHILE '(' expr ')' ':' '(' expr ')' stmt
           ;
 
 for_stmt: FOR '(' for_input ')' '|' ID '|' stmt
