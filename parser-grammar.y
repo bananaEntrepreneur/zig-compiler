@@ -47,26 +47,37 @@ array_type: '[' expr ']' PRIMITIVE_TYPE
           | '[' expr ']' array_type
           ;
 
-container_type: STRUCT '{' members '}'
-              | ENUM '{' members '}'
-              | ENUM '(' type ')' '{' members '}'
+container_type: STRUCT '{' struct_members '}'
+              | ENUM '{' enum_members '}'
+              | ENUM '(' type ')' '{' enum_members '}'
               ;
 
-members: member_list
-       | member_list field
-       ;
+enum_members: enum_member_list
+            | enum_member_list enum_field
+            ;
 
-member_list: %empty
-           | member_list field ','
-           | member_list decl
-           ;
+enum_member_list: %empty
+                | enum_member_list enum_field ','
+                | enum_member_list decl
+                ;
 
-field: ID
-     | ID ':' type
-     | ID ':' type '=' expr
-     | ID '=' expr
-     ;
-     
+struct_members: struct_member_list
+              | struct_member_list struct_field
+              ;
+
+struct_member_list: %empty
+                  | struct_member_list struct_field ','
+                  | struct_member_list decl
+                  ;
+
+enum_field: ID
+          | ID '=' expr
+          ;
+
+struct_field: ID ':' type
+            | ID ':' type '=' expr
+            ;
+
 fn_decl: FN ID '(' param_list_opt ')' type block
        | FN ID '(' param_list_opt ')' '!' type block
        | FN ID '(' param_list_opt ')' VOID block
