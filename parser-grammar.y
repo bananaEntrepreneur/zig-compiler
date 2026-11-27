@@ -186,6 +186,7 @@ assign: expr '=' expr
 
 while_stmt: WHILE '(' expr ')' block
           | WHILE '(' expr ')' ':' '(' assign ')' block
+          | WHILE '(' expr ')' ':' '(' expr ')' block
           ;
 
 for_stmt: FOR '(' for_input ')' '|' ID '|' stmt
