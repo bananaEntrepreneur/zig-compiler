@@ -195,6 +195,6 @@ for_input: expr
          | expr DOT_DOT expr
          ;
 
-if_stmt: IF '(' expr ')' block
-       | IF '(' expr ')' block ELSE stmt
+if_stmt: IF '(' expr ')' stmt
+       | IF '(' expr ')' ? ELSE stmt
        ;
