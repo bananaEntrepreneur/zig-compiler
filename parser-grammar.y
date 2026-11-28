@@ -5,7 +5,10 @@
 %token DOT_DOT
 %token ERROR TRY CATCH
 
+%nonassoc IF_WITHOUT_ELSE
 %nonassoc ELSE
+%precedence ';'
+%right '=' ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %left OR
 %left AND
 %nonassoc '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
@@ -137,6 +140,7 @@ expr: container_type
     | BUILTIN '(' arg_list_opt ')'
 
     | IF '(' expr ')' expr ELSE expr
+    | IF '(' expr ')' expr %prec IF_WITHOUT_ELSE
 
     | expr CATCH expr
     | expr CATCH '|' ID '|' expr %prec CATCH

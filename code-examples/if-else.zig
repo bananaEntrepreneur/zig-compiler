@@ -64,4 +64,13 @@ pub fn main() !void {
     }
 
     if (total_area != 24 or !rectangle.isSquare()) return error.UnexpectedResult;
+
+    const condition = false;
+    const result = if (condition) 42;
+    std.debug.print("{}\n", .{result}); // выведет void
+
+    const condition = true;
+    const result = if (condition) 42;
+    std.debug.print("{}\n", .{result}); // выведет 42
+
 }
